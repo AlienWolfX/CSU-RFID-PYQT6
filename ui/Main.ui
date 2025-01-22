@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
+    <width>1082</width>
     <height>600</height>
    </rect>
   </property>
@@ -18,13 +18,13 @@
     <property name="geometry">
      <rect>
       <x>90</x>
-      <y>100</y>
+      <y>80</y>
       <width>55</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>RFID</string>
+     <string>RFID:</string>
     </property>
    </widget>
    <widget class="QTextEdit" name="rfidValue">
@@ -33,8 +33,8 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>130</x>
-      <y>90</y>
+      <x>150</x>
+      <y>80</y>
       <width>171</width>
       <height>31</height>
      </rect>
@@ -46,13 +46,93 @@
      <bool>true</bool>
     </property>
    </widget>
+   <widget class="QLabel" name="nameLabel">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>130</y>
+      <width>55</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Name:</string>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="nameValue">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>150</x>
+      <y>130</y>
+      <width>171</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="acceptDrops">
+     <bool>false</bool>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="plateLabel">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>180</y>
+      <width>55</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Plate No:</string>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="plateValue">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>150</x>
+      <y>180</y>
+      <width>171</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="acceptDrops">
+     <bool>false</bool>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="userPhoto">
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>70</y>
+      <width>391</width>
+      <height>301</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>1082</width>
      <height>26</height>
     </rect>
    </property>

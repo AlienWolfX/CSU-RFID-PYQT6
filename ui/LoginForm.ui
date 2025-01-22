@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>523</width>
-    <height>300</height>
+    <height>330</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <property name="geometry">
     <rect>
      <x>250</x>
-     <y>140</y>
+     <y>170</y>
      <width>221</width>
      <height>31</height>
     </rect>
@@ -27,7 +27,7 @@
    <property name="geometry">
     <rect>
      <x>250</x>
-     <y>70</y>
+     <y>100</y>
      <width>221</width>
      <height>31</height>
     </rect>
@@ -37,7 +37,7 @@
    <property name="geometry">
     <rect>
      <x>370</x>
-     <y>220</y>
+     <y>250</y>
      <width>93</width>
      <height>28</height>
     </rect>
@@ -50,7 +50,7 @@
    <property name="geometry">
     <rect>
      <x>250</x>
-     <y>50</y>
+     <y>80</y>
      <width>91</width>
      <height>16</height>
     </rect>
@@ -59,11 +59,11 @@
     <string>Username</string>
    </property>
   </widget>
-  <widget class="QLabel" name="usernameLabel_2">
+  <widget class="QLabel" name="passwordLabel">
    <property name="geometry">
     <rect>
      <x>250</x>
-     <y>120</y>
+     <y>150</y>
      <width>91</width>
      <height>16</height>
     </rect>
@@ -76,7 +76,7 @@
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>50</y>
+     <y>80</y>
      <width>171</width>
      <height>171</height>
     </rect>
@@ -89,6 +89,39 @@
    </property>
    <property name="scaledContents">
     <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>30</y>
+     <width>51</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Rockwell Extra Bold</family>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string>LOGIN</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="statusLabel">
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>230</y>
+     <width>171</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
    </property>
   </widget>
  </widget>

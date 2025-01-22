@@ -1,8 +1,11 @@
 # Folders
 .venv/*
 __pycache__
+media
 
 # Files
 compileUI.py
 readRFID.py
 main.py
+.env
+encrypt.py
