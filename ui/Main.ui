@@ -7,124 +7,189 @@
     <x>0</x>
     <y>0</y>
     <width>1082</width>
-    <height>600</height>
+    <height>657</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>CSU-RFID</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QLabel" name="rfidLabel">
+   <widget class="QTableWidget" name="tableLogs">
     <property name="geometry">
      <rect>
-      <x>90</x>
-      <y>80</y>
-      <width>55</width>
-      <height>16</height>
+      <x>80</x>
+      <y>390</y>
+      <width>541</width>
+      <height>192</height>
      </rect>
     </property>
-    <property name="text">
-     <string>RFID:</string>
-    </property>
+    <column>
+     <property name="text">
+      <string>RFID</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Name</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Plate No.</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Time</string>
+     </property>
+    </column>
    </widget>
-   <widget class="QTextEdit" name="rfidValue">
+   <widget class="QFrame" name="frame">
     <property name="enabled">
      <bool>true</bool>
     </property>
     <property name="geometry">
      <rect>
-      <x>150</x>
-      <y>80</y>
-      <width>171</width>
-      <height>31</height>
+      <x>50</x>
+      <y>60</y>
+      <width>271</width>
+      <height>171</height>
      </rect>
     </property>
-    <property name="acceptDrops">
-     <bool>false</bool>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
     </property>
-    <property name="readOnly">
-     <bool>true</bool>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
     </property>
+    <widget class="QTextEdit" name="plateValue">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>80</x>
+       <y>120</y>
+       <width>171</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QTextEdit" name="rfidValue">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>80</x>
+       <y>20</y>
+       <width>171</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QTextEdit" name="nameValue">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>80</x>
+       <y>70</y>
+       <width>171</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="nameLabel">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>70</y>
+       <width>55</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Name:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="rfidLabel">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>20</y>
+       <width>55</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>RFID:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="plateLabel">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>120</y>
+       <width>55</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Plate No:</string>
+     </property>
+    </widget>
    </widget>
-   <widget class="QLabel" name="nameLabel">
+   <widget class="QFrame" name="frame_2">
     <property name="geometry">
      <rect>
-      <x>90</x>
-      <y>130</y>
-      <width>55</width>
-      <height>16</height>
+      <x>480</x>
+      <y>40</y>
+      <width>441</width>
+      <height>281</height>
      </rect>
     </property>
-    <property name="text">
-     <string>Name:</string>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
     </property>
-   </widget>
-   <widget class="QTextEdit" name="nameValue">
-    <property name="enabled">
-     <bool>true</bool>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
     </property>
-    <property name="geometry">
-     <rect>
-      <x>150</x>
-      <y>130</y>
-      <width>171</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="acceptDrops">
-     <bool>false</bool>
-    </property>
-    <property name="readOnly">
-     <bool>true</bool>
-    </property>
-   </widget>
-   <widget class="QLabel" name="plateLabel">
-    <property name="geometry">
-     <rect>
-      <x>90</x>
-      <y>180</y>
-      <width>55</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Plate No:</string>
-    </property>
-   </widget>
-   <widget class="QTextEdit" name="plateValue">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>150</x>
-      <y>180</y>
-      <width>171</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="acceptDrops">
-     <bool>false</bool>
-    </property>
-    <property name="readOnly">
-     <bool>true</bool>
-    </property>
-   </widget>
-   <widget class="QLabel" name="userPhoto">
-    <property name="geometry">
-     <rect>
-      <x>360</x>
-      <y>70</y>
-      <width>391</width>
-      <height>301</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="scaledContents">
-     <bool>true</bool>
-    </property>
+    <widget class="QLabel" name="userPhoto">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>20</y>
+       <width>391</width>
+       <height>241</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="scaledContents">
+      <bool>true</bool>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
