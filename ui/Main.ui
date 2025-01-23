@@ -6,23 +6,39 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1082</width>
-    <height>657</height>
+    <width>1037</width>
+    <height>815</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>CSU-RFID</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../images/csuLogo.png</normaloff>../images/csuLogo.png</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QTableWidget" name="tableLogs">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
     <property name="geometry">
      <rect>
-      <x>80</x>
-      <y>390</y>
-      <width>541</width>
+      <x>480</x>
+      <y>520</y>
+      <width>511</width>
       <height>192</height>
      </rect>
     </property>
+    <property name="showGrid">
+     <bool>true</bool>
+    </property>
+    <property name="wordWrap">
+     <bool>true</bool>
+    </property>
+    <attribute name="verticalHeaderHighlightSections">
+     <bool>true</bool>
+    </attribute>
     <column>
      <property name="text">
       <string>RFID</string>
@@ -44,15 +60,15 @@
      </property>
     </column>
    </widget>
-   <widget class="QFrame" name="frame">
+   <widget class="QFrame" name="frameInfo">
     <property name="enabled">
      <bool>true</bool>
     </property>
     <property name="geometry">
      <rect>
       <x>50</x>
-      <y>60</y>
-      <width>271</width>
+      <y>20</y>
+      <width>351</width>
       <height>171</height>
      </rect>
     </property>
@@ -70,7 +86,7 @@
       <rect>
        <x>80</x>
        <y>120</y>
-       <width>171</width>
+       <width>251</width>
        <height>31</height>
       </rect>
      </property>
@@ -89,7 +105,7 @@
       <rect>
        <x>80</x>
        <y>20</y>
-       <width>171</width>
+       <width>251</width>
        <height>31</height>
       </rect>
      </property>
@@ -108,7 +124,7 @@
       <rect>
        <x>80</x>
        <y>70</y>
-       <width>171</width>
+       <width>251</width>
        <height>31</height>
       </rect>
      </property>
@@ -159,13 +175,13 @@
      </property>
     </widget>
    </widget>
-   <widget class="QFrame" name="frame_2">
+   <widget class="QFrame" name="framePicture">
     <property name="geometry">
      <rect>
       <x>480</x>
-      <y>40</y>
-      <width>441</width>
-      <height>281</height>
+      <y>20</y>
+      <width>511</width>
+      <height>451</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -177,10 +193,10 @@
     <widget class="QLabel" name="userPhoto">
      <property name="geometry">
       <rect>
-       <x>20</x>
-       <y>20</y>
-       <width>391</width>
-       <height>241</height>
+       <x>10</x>
+       <y>10</y>
+       <width>491</width>
+       <height>431</height>
       </rect>
      </property>
      <property name="text">
@@ -191,18 +207,144 @@
      </property>
     </widget>
    </widget>
+   <widget class="QFrame" name="frameCSU">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>290</y>
+      <width>351</width>
+      <height>271</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QLabel" name="csuLogo">
+     <property name="geometry">
+      <rect>
+       <x>90</x>
+       <y>20</y>
+       <width>171</width>
+       <height>171</height>
+      </rect>
+     </property>
+     <property name="lineWidth">
+      <number>0</number>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="pixmap">
+      <pixmap>../images/csuLogo.png</pixmap>
+     </property>
+     <property name="scaledContents">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="csuLabel">
+     <property name="geometry">
+      <rect>
+       <x>80</x>
+       <y>220</y>
+       <width>191</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>MS Reference Sans Serif</family>
+       <pointsize>20</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>CSU VecMon</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QPushButton" name="buttonLogout">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>630</y>
+      <width>351</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="text">
+     <string>LOGOUT</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../images/logoutIcon.png</normaloff>../images/logoutIcon.png</iconset>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1082</width>
+     <width>1037</width>
      <height>26</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <widget class="QMenu" name="menuExport_to">
+     <property name="title">
+      <string>Export to</string>
+     </property>
+     <addaction name="actionCSV"/>
+     <addaction name="action_xlsx"/>
+     <addaction name="action_txt"/>
+    </widget>
+    <addaction name="menuExport_to"/>
+    <addaction name="separator"/>
+    <addaction name="actionExit"/>
+   </widget>
+   <widget class="QMenu" name="menuAbout">
+    <property name="title">
+     <string>About</string>
+    </property>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuAbout"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionCSV">
+   <property name="text">
+    <string>.csv</string>
+   </property>
+  </action>
+  <action name="action_xlsx">
+   <property name="text">
+    <string>.xlsx</string>
+   </property>
+  </action>
+  <action name="action_txt">
+   <property name="text">
+    <string>.txt</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>
