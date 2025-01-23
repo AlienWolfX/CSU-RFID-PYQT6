@@ -6,6 +6,5 @@ media
 # Files
 compileUI.py
 readRFID.py
-main.py
 .env
 encrypt.py
