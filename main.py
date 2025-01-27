@@ -134,7 +134,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         name = "Unknown"
         plate = "Unknown"
         
-        if tag == "4819CB":
+        if tag == "4819E9":
             name = "Ethel"
             plate = "Meow678"
             self.userPhoto.setPixmap(QPixmap("media/meow.jpg"))
