@@ -7,6 +7,7 @@ from PyQt6.QtGui import QPixmap
 from forms.LoginForm import Ui_LoginDialog
 from forms.Main import Ui_MainWindow
 from datetime import datetime
+from database import Database
 
 READ_TIMEOUT = 2
 
@@ -72,15 +73,17 @@ class LoginDialog(QDialog, Ui_LoginDialog):
         super().__init__()
         self.setupUi(self)
         self.loginButton.clicked.connect(self.verify_credentials)
+        self.db = Database()
 
     def verify_credentials(self):
-        username = self.usernameField.toPlainText()
-        password = self.passwordField.toPlainText()
-        # Testing Logic
-        if username == "admin" and password == "admin":
+        username = self.usernameField.text()
+        password = self.passwordField.text()
+        
+        if self.db.verify_login(username, password):
             self.accept()
         else:
             self.statusLabel.setText("Invalid credentials")
+            self.passwordField.clear()
 
 class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -91,13 +94,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.rfidReader.start()
         
         self.buttonLogout.clicked.connect(self.logout)
+        self.db = Database()
         
-        # Only store 1 log 
         self.tableLogs.setSortingEnabled(True)
         self.tableLogs.sortItems(3, Qt.SortOrder.DescendingOrder)
-        self.last_log_times = {}  # Dictionary to track last log time per RFID
-        self.LOG_TIMEOUT = 300  # 5 minutes in seconds
-        
+        self.last_log_times = {}
+        self.LOG_TIMEOUT = 300
+
     def logout(self):
         """Handle logout button click"""
         self.rfidReader.stop()
@@ -131,18 +134,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def update_rfid_value(self, tag):
         """Updates the rfidValue text field with the read RFID tag and logs entry."""
         self.rfidValue.setText(tag)
-        name = "Unknown"
-        plate = "Unknown"
         
-        if tag == "4819E9":
-            name = "Ethel"
-            plate = "Meow678"
-            self.userPhoto.setPixmap(QPixmap("media/meow.jpg"))
-        elif tag == "0800CB":
-            name = "Whisker"
-            plate = "Purr123"
-            self.userPhoto.setPixmap(QPixmap("media/whisker.jpg"))
+        result = self.db.get_user(tag)
+        if result:
+            name, plate, photo_path = result
+            self.userPhoto.setPixmap(QPixmap(photo_path))
         else:
+            name = "Unknown"
+            plate = "Unknown"
             self.userPhoto.setPixmap(QPixmap("media/unknown.jpg"))
             
         self.nameValue.setText(name)
@@ -150,24 +149,26 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         
         # Log entry in table
         self.add_table_entry(tag, name, plate)
+        self.db.log_entry(tag)
 
     def closeEvent(self, event):
         """Handles the window close event to stop the RFID reader thread."""
         self.rfidReader.stop()
+        self.db.close()
         event.accept()
 
 def main():
-    # app = QApplication(sys.argv)
-    # login = LoginDialog()
-    # if login.exec() == QDialog.DialogCode.Accepted:
-    #     main_window = MainWindow()
-    #     main_window.show()
-    #     sys.exit(app.exec())
-    # sys.exit()
     app = QApplication(sys.argv)
-    main_window = MainWindow()
-    main_window.show()
-    sys.exit(app.exec())
+    login = LoginDialog()
+    if login.exec() == QDialog.DialogCode.Accepted:
+        main_window = MainWindow()
+        main_window.show()
+        sys.exit(app.exec())
+    sys.exit()
+    # app = QApplication(sys.argv)
+    # main_window = MainWindow()
+    # main_window.show()
+    # sys.exit(app.exec())
 
 if __name__ == "__main__":
     main()
