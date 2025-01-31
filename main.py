@@ -6,6 +6,7 @@ from PyQt6.QtCore import Qt, QThread, pyqtSignal
 from PyQt6.QtGui import QPixmap
 from forms.LoginForm import Ui_LoginDialog
 from forms.Main import Ui_MainWindow
+from forms.AdminMain import Ui_AdminMainWindow
 from datetime import datetime
 from database import Database
 
@@ -74,14 +75,21 @@ class LoginDialog(QDialog, Ui_LoginDialog):
         self.setupUi(self)
         self.loginButton.clicked.connect(self.verify_credentials)
         self.db = Database()
+        self.role_id = None
 
     def verify_credentials(self):
         username = self.usernameField.text()
         password = self.passwordField.text()
         
         if self.db.verify_login(username, password):
+            user_id = self.db.get_user_id(username)
+            self.role_id = self.db.get_user_role(user_id)  # Get user role
+            self.db.log_login_attempt(user_id, True)
             self.accept()
         else:
+            user_id = self.db.get_user_id(username)
+            if user_id:
+                self.db.log_login_attempt(user_id, False)
             self.statusLabel.setText("Invalid credentials")
             self.passwordField.clear()
 
@@ -157,18 +165,38 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.db.close()
         event.accept()
 
+class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
+        self.db = Database()
+        
+        # Connect logout button
+        self.buttonLogout.clicked.connect(self.logout)
+        
+        # Connect menu actions
+        self.actionExit.triggered.connect(self.close)
+        
+        # Set default photo
+        self.userPhoto.setPixmap(QPixmap("media/unknown.jpg"))
+
+    def logout(self):
+        """Handle logout button click"""
+        self.close()
+
 def main():
     app = QApplication(sys.argv)
+    
+    # Show login dialog first
     login = LoginDialog()
     if login.exec() == QDialog.DialogCode.Accepted:
-        main_window = MainWindow()
-        main_window.show()
+        # Check role and open appropriate window
+        if login.role_id == 1:  # Admin
+            window = AdminMainWindow()
+        else:  # Regular user
+            window = MainWindow()
+        window.show()
         sys.exit(app.exec())
-    sys.exit()
-    # app = QApplication(sys.argv)
-    # main_window = MainWindow()
-    # main_window.show()
-    # sys.exit(app.exec())
 
 if __name__ == "__main__":
     main()

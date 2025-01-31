@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>CSU-RFID</string>
+   <string>CSU-VecMon</string>
   </property>
   <property name="windowIcon">
    <iconset>
