@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1037</width>
+    <width>1353</width>
     <height>815</height>
    </rect>
   </property>
@@ -26,8 +26,8 @@
      <rect>
       <x>40</x>
       <y>80</y>
-      <width>371</width>
-      <height>491</height>
+      <width>321</width>
+      <height>451</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -62,30 +62,7 @@
       <string>Driver Code:</string>
      </property>
     </widget>
-    <widget class="QLabel" name="plateLabel">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>200</y>
-       <width>55</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Plate No:</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="plateValue">
-     <property name="geometry">
-      <rect>
-       <x>100</x>
-       <y>200</y>
-       <width>181</width>
-       <height>31</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="first_nameValue">
+    <widget class="QLineEdit" name="dfirst_nameValue">
      <property name="geometry">
       <rect>
        <x>100</x>
@@ -95,7 +72,7 @@
       </rect>
      </property>
     </widget>
-    <widget class="QLineEdit" name="nameValue_2">
+    <widget class="QLineEdit" name="driver_codeValue">
      <property name="geometry">
       <rect>
        <x>100</x>
@@ -118,7 +95,7 @@
       <string>Driver Details</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="last_nameValue">
+    <widget class="QLineEdit" name="dlast_nameValue">
      <property name="geometry">
       <rect>
        <x>100</x>
@@ -145,7 +122,7 @@
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>250</y>
+       <y>190</y>
        <width>71</width>
        <height>16</height>
       </rect>
@@ -158,7 +135,7 @@
      <property name="geometry">
       <rect>
        <x>100</x>
-       <y>250</y>
+       <y>190</y>
        <width>181</width>
        <height>31</height>
       </rect>
@@ -168,7 +145,7 @@
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>300</y>
+       <y>240</y>
        <width>71</width>
        <height>16</height>
       </rect>
@@ -177,21 +154,21 @@
       <string>License No.:</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="licenseValue">
+    <widget class="QLineEdit" name="license_noValue">
      <property name="geometry">
       <rect>
        <x>100</x>
-       <y>300</y>
+       <y>240</y>
        <width>181</width>
        <height>31</height>
       </rect>
      </property>
     </widget>
-    <widget class="QDateEdit" name="dateEdit">
+    <widget class="QDateEdit" name="crExpiry">
      <property name="geometry">
       <rect>
        <x>100</x>
-       <y>350</y>
+       <y>290</y>
        <width>181</width>
        <height>31</height>
       </rect>
@@ -201,7 +178,7 @@
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>350</y>
+       <y>290</y>
        <width>71</width>
        <height>16</height>
       </rect>
@@ -214,7 +191,7 @@
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>400</y>
+       <y>340</y>
        <width>71</width>
        <height>16</height>
       </rect>
@@ -223,11 +200,11 @@
       <string>OR Expiry:</string>
      </property>
     </widget>
-    <widget class="QDateEdit" name="dateEdit_2">
+    <widget class="QDateEdit" name="orExpiry">
      <property name="geometry">
       <rect>
        <x>100</x>
-       <y>400</y>
+       <y>340</y>
        <width>181</width>
        <height>31</height>
       </rect>
@@ -237,7 +214,7 @@
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>450</y>
+       <y>390</y>
        <width>81</width>
        <height>16</height>
       </rect>
@@ -250,7 +227,7 @@
      <property name="geometry">
       <rect>
        <x>100</x>
-       <y>450</y>
+       <y>390</y>
        <width>181</width>
        <height>21</height>
       </rect>
@@ -263,9 +240,9 @@
    <widget class="QFrame" name="framePicture">
     <property name="geometry">
      <rect>
-      <x>550</x>
-      <y>80</y>
-      <width>421</width>
+      <x>830</x>
+      <y>70</y>
+      <width>381</width>
       <height>321</height>
      </rect>
     </property>
@@ -280,8 +257,8 @@
       <rect>
        <x>30</x>
        <y>20</y>
-       <width>361</width>
-       <height>271</height>
+       <width>321</width>
+       <height>281</height>
       </rect>
      </property>
      <property name="text">
@@ -295,9 +272,9 @@
    <widget class="QFrame" name="frameCSU">
     <property name="geometry">
      <rect>
-      <x>490</x>
-      <y>500</y>
-      <width>501</width>
+      <x>790</x>
+      <y>430</y>
+      <width>461</width>
       <height>181</height>
      </rect>
     </property>
@@ -330,9 +307,9 @@
    <widget class="QPushButton" name="buttonLogout">
     <property name="geometry">
      <rect>
-      <x>520</x>
-      <y>710</y>
-      <width>351</width>
+      <x>830</x>
+      <y>640</y>
+      <width>381</width>
       <height>28</height>
      </rect>
     </property>
@@ -356,8 +333,8 @@
    <widget class="QLabel" name="csuLogo">
     <property name="geometry">
      <rect>
-      <x>660</x>
-      <y>510</y>
+      <x>980</x>
+      <y>440</y>
       <width>121</width>
       <height>121</height>
      </rect>
@@ -375,13 +352,205 @@
      <bool>true</bool>
     </property>
    </widget>
+   <widget class="QFrame" name="frameInfo_2">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>390</x>
+      <y>80</y>
+      <width>321</width>
+      <height>211</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QLabel" name="first_nameLabel_2">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>90</y>
+       <width>81</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Plate No:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="rfidLabel_2">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>40</y>
+       <width>71</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Plate ID: </string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="plate_noValue">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>90</y>
+       <width>181</width>
+       <height>31</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="plate_idValue">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>40</y>
+       <width>181</width>
+       <height>31</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="registerLabel_2">
+     <property name="geometry">
+      <rect>
+       <x>120</x>
+       <y>10</y>
+       <width>111</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Vehicle Information</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="modelValue">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>140</y>
+       <width>181</width>
+       <height>31</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="last_nameLabel_2">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>140</y>
+       <width>71</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Model:</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QFrame" name="frameInfo_3">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>390</x>
+      <y>370</y>
+      <width>321</width>
+      <height>161</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QLabel" name="first_nameLabel_3">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>90</y>
+       <width>131</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Last Lastname:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="rfidLabel_3">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>40</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>First Name:</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="plast_nameValue">
+     <property name="geometry">
+      <rect>
+       <x>130</x>
+       <y>90</y>
+       <width>151</width>
+       <height>31</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="pfirst_nameValue">
+     <property name="geometry">
+      <rect>
+       <x>130</x>
+       <y>40</y>
+       <width>151</width>
+       <height>31</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="registerLabel_3">
+     <property name="geometry">
+      <rect>
+       <x>110</x>
+       <y>10</y>
+       <width>131</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Proprietor Information</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QPushButton" name="submitButton">
+    <property name="geometry">
+     <rect>
+      <x>390</x>
+      <y>640</y>
+      <width>321</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Submit</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1037</width>
+     <width>1353</width>
      <height>26</height>
     </rect>
    </property>

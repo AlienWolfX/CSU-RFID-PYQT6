@@ -171,10 +171,8 @@ class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
         self.setupUi(self)
         self.db = Database()
         
-        # Connect logout button
         self.buttonLogout.clicked.connect(self.logout)
         
-        # Connect menu actions
         self.actionExit.triggered.connect(self.close)
         
         # Set default photo
@@ -187,10 +185,8 @@ class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
 def main():
     app = QApplication(sys.argv)
     
-    # Show login dialog first
     login = LoginDialog()
     if login.exec() == QDialog.DialogCode.Accepted:
-        # Check role and open appropriate window
         if login.role_id == 1:  # Admin
             window = AdminMainWindow()
         else:  # Regular user

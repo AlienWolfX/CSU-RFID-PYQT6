@@ -121,7 +121,7 @@ class Database(QObject):
         ''')
         query.addBindValue(plate_id)
         query.addBindValue(plate_number)
-        query.addBindValue(model)
+        query.addBindValue(model)   
         query.addBindValue(proprietor_id)
         query.addBindValue(driver_id)
         return query.exec()
