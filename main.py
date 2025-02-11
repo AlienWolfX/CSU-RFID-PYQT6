@@ -1,8 +1,8 @@
 import sys
 import serial
 import time
-from PyQt6.QtWidgets import QApplication, QDialog, QMainWindow, QTableWidgetItem
-from PyQt6.QtCore import Qt, QThread, pyqtSignal
+from PyQt6.QtWidgets import QApplication, QDialog, QMainWindow, QTableWidgetItem, QMessageBox, QFileDialog
+from PyQt6.QtCore import Qt, QThread, pyqtSignal, QDate
 from PyQt6.QtGui import QPixmap
 from forms.LoginForm import Ui_LoginDialog
 from forms.Main import Ui_MainWindow
@@ -171,12 +171,128 @@ class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
         self.setupUi(self)
         self.db = Database()
         
+        # Connect signals
         self.buttonLogout.clicked.connect(self.logout)
-        
         self.actionExit.triggered.connect(self.close)
+        self.uploadButton.clicked.connect(self.upload_photo)
+        self.submitButton.clicked.connect(self.register_driver)
         
-        # Set default photo
+        # Set default photo and initialize photo path
         self.userPhoto.setPixmap(QPixmap("media/unknown.jpg"))
+        self.driver_photo_path = "media/unknown.jpg"
+        
+        # Set date formats
+        self.crExpiry.setDisplayFormat("yyyy-MM-dd")
+        self.orExpiry.setDisplayFormat("yyyy-MM-dd")
+
+    def upload_photo(self):
+        """Handle photo upload button click"""
+        file_name, _ = QFileDialog.getOpenFileName(
+            self,
+            "Select Driver Photo",
+            "",
+            "Image files (*.jpg *.png *.jpeg)"
+        )
+        if file_name:
+            self.driver_photo_path = file_name
+            self.userPhoto.setPixmap(QPixmap(file_name))
+
+    def register_driver(self):
+        """Handle driver, vehicle, and proprietor registration"""
+        # Get driver values
+        driver_code = self.driver_codeValue.text()
+        first_name = self.dfirst_nameValue.text()
+        last_name = self.dlast_nameValue.text()
+        driver_type = self.driver_typeValue.text()
+        license_no = self.license_noValue.text()
+        cr_expiry = self.crExpiry.date().toPyDate()
+        or_expiry = self.orExpiry.date().toPyDate()
+
+        # Get vehicle values
+        plate_id = self.plate_idValue.text()
+        plate_no = self.plate_noValue.text()
+        model = self.modelValue.text()
+
+        # Get proprietor values
+        proprietor_first_name = self.pfirst_nameValue.text()
+        proprietor_last_name = self.plast_nameValue.text()
+
+        # Basic validation
+        if not all([driver_code, first_name, last_name, driver_type, license_no,
+                    plate_id, plate_no, model,
+                    proprietor_first_name, proprietor_last_name]):
+            QMessageBox.warning(
+                self,
+                "Validation Error",
+                "Please fill in all required fields."
+            )
+            return
+
+        # First add driver
+        driver_success = self.db.add_driver(
+            driver_code=driver_code,
+            first_name=first_name,
+            last_name=last_name,
+            driver_type=driver_type,
+            driver_photo=self.driver_photo_path,
+            cr_expiry_date=cr_expiry,
+            or_expiry_date=or_expiry,
+            driver_license_no=license_no
+        )
+
+        if not driver_success:
+            QMessageBox.critical(
+                self,
+                "Error",
+                "Failed to register driver"
+            )
+            return
+
+        # Then add vehicle with proprietor
+        vehicle_success = self.db.add_vehicle_with_relations(
+            plate_id=plate_id,
+            plate_number=plate_no,
+            model=model,
+            proprietor_first_name=proprietor_first_name,
+            proprietor_last_name=proprietor_last_name,
+            driver_code=driver_code
+        )
+
+        if vehicle_success:
+            QMessageBox.information(
+                self,
+                "Success",
+                "Driver, vehicle, and proprietor registered successfully!"
+            )
+            self.clear_form()
+        else:
+            QMessageBox.critical(
+                self,
+                "Error",
+                "Failed to register vehicle information"
+            )
+
+    def clear_form(self):
+        """Clear all form fields"""
+        # Clear driver fields
+        self.driver_codeValue.clear()
+        self.dfirst_nameValue.clear()
+        self.dlast_nameValue.clear()
+        self.driver_typeValue.clear()
+        self.license_noValue.clear()
+        self.crExpiry.setDate(QDate.currentDate())
+        self.orExpiry.setDate(QDate.currentDate())
+        self.userPhoto.setPixmap(QPixmap("media/unknown.jpg"))
+        self.driver_photo_path = "media/unknown.jpg"
+        
+        # Clear vehicle fields
+        self.plate_idValue.clear()
+        self.plate_noValue.clear()
+        self.modelValue.clear()
+        
+        # Clear proprietor fields
+        self.pfirst_nameValue.clear()
+        self.plast_nameValue.clear()
 
     def logout(self):
         """Handle logout button click"""
