@@ -139,25 +139,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # Resort table 
         self.tableLogs.sortItems(3, Qt.SortOrder.DescendingOrder)
 
-    def update_rfid_value(self, tag):
-        """Updates the rfidValue text field with the read RFID tag and logs entry."""
-        self.rfidValue.setText(tag)
-        
-        result = self.db.get_user(tag)
-        if result:
-            name, plate, photo_path = result
-            self.userPhoto.setPixmap(QPixmap(photo_path))
+    def update_rfid_value(self, code):
+        driver = self.db.get_driver_by_code(code)
+        if driver:
+            name_str = f"{driver['first_name']} {driver['last_name']}"
+            self.userPhoto.setPixmap(QPixmap(driver['driver_photo']))
         else:
-            name = "Unknown"
-            plate = "Unknown"
+            name_str = "Unknown"
             self.userPhoto.setPixmap(QPixmap("media/unknown.jpg"))
-            
-        self.nameValue.setText(name)
-        self.plateValue.setText(plate)
-        
-        # Log entry in table
-        self.add_table_entry(tag, name, plate)
-        self.db.log_entry(tag)
+
+        self.rfidValue.setText(code)
+        self.nameValue.setText(name_str)
 
     def closeEvent(self, event):
         """Handles the window close event to stop the RFID reader thread."""
@@ -186,7 +178,6 @@ class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
         self.orExpiry.setDisplayFormat("yyyy-MM-dd")
 
     def upload_photo(self):
-        """Handle photo upload button click"""
         file_name, _ = QFileDialog.getOpenFileName(
             self,
             "Select Driver Photo",
@@ -194,8 +185,31 @@ class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
             "Image files (*.jpg *.png *.jpeg)"
         )
         if file_name:
-            self.driver_photo_path = file_name
-            self.userPhoto.setPixmap(QPixmap(file_name))
+            import shutil, os
+            
+            # Make sure the "images" folder exists
+            if not os.path.exists("images"):
+                os.makedirs("images")
+
+            # Get extension from the original file
+            extension = os.path.splitext(file_name)[1]
+
+            # Use first and last name for new filename
+            safe_first = self.dfirst_nameValue.text() or "FirstName"
+            safe_last = self.dlast_nameValue.text() or "LastName"
+            new_filename = f"{safe_first}_{safe_last}{extension}"
+            
+            new_path = os.path.join("images", new_filename)
+            try:
+                shutil.copy(file_name, new_path)
+                self.driver_photo_path = new_path
+            except Exception as e:
+                print(f"Error copying file: {e}")
+                # Fallback
+                self.driver_photo_path = file_name
+            
+            # Update the QPixmap to the new path
+            self.userPhoto.setPixmap(QPixmap(self.driver_photo_path))
 
     def register_driver(self):
         """Handle driver, vehicle, and proprietor registration"""

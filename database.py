@@ -123,6 +123,23 @@ class Database(QObject):
             }
         return None
 
+    def get_driver_by_code(self, driver_code):
+        query = QSqlQuery()
+        query.prepare("""
+            SELECT driver_code, first_name, last_name, driver_photo
+            FROM drivers
+            WHERE driver_code = $1
+        """)
+        query.addBindValue(driver_code)
+        if query.exec() and query.next():
+            return {
+                'driver_code': query.value(0),
+                'first_name': query.value(1),
+                'last_name': query.value(2),
+                'driver_photo': query.value(3)
+            }
+        return None
+
     def add_vehicle(self, plate_id, plate_number, model, proprietor_id, driver_id):
         query = QSqlQuery()
         query.prepare('''
