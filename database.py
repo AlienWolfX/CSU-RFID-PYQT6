@@ -438,5 +438,43 @@ class Database(QObject):
         print(f"Proprietor error: {query.lastError().text()}")
         return None
 
+    def delete_driver(self, driver_code):
+        """Delete driver and related records"""
+        self.db.transaction()
+        try:
+            # First get the driver_id
+            driver_id_query = QSqlQuery()
+            driver_id_query.prepare("SELECT driver_id FROM drivers WHERE driver_code = $1")
+            driver_id_query.addBindValue(driver_code)
+            
+            if not driver_id_query.exec() or not driver_id_query.next():
+                raise Exception("Driver not found")
+                
+            driver_id = driver_id_query.value(0)
+
+            # Delete vehicle records first (due to foreign key constraints)
+            vehicle_query = QSqlQuery()
+            vehicle_query.prepare("DELETE FROM vehicles WHERE driver_id = $1")
+            vehicle_query.addBindValue(driver_id)
+            
+            if not vehicle_query.exec():
+                raise Exception("Failed to delete vehicle records")
+
+            # Finally delete the driver
+            driver_query = QSqlQuery()
+            driver_query.prepare("DELETE FROM drivers WHERE driver_code = $1")
+            driver_query.addBindValue(driver_code)
+            
+            if not driver_query.exec():
+                raise Exception("Failed to delete driver")
+
+            self.db.commit()
+            return True
+
+        except Exception as e:
+            self.db.rollback()
+            print(f"Error deleting driver: {str(e)}")
+            return False
+
     def close(self):
         self.db.close()

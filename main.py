@@ -174,7 +174,8 @@ class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
         self.uploadButton.clicked.connect(self.upload_photo)
         self.submitButton.clicked.connect(self.register_driver)
         self.updateButton.clicked.connect(self.update_driver)  # Add this line
-        
+        self.deleteButton.clicked.connect(self.delete_driver)
+
         # Set default photo and initialize photo path
         self.userPhoto.setPixmap(QPixmap("media/unknown.jpg"))
         self.driver_photo_path = "media/unknown.jpg"
@@ -460,6 +461,47 @@ class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
                 "Error",
                 "Failed to update vehicle information"
             )
+
+    def delete_driver(self):
+        """Handle driver deletion"""
+        # Get selected row
+        current_row = self.detailsTable.currentRow()
+        if current_row < 0:
+            QMessageBox.warning(
+                self,
+                "Selection Error",
+                "Please select a driver to delete by clicking on a row in the table."
+            )
+            return
+
+        # Get driver code from selected row
+        driver_code = self.detailsTable.item(current_row, 0).text()
+
+        # Show confirmation dialog
+        reply = QMessageBox.question(
+            self,
+            'Confirm Deletion',
+            'Do you wish to delete this driver?',
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No
+        )
+
+        if reply == QMessageBox.StandardButton.Yes:
+            # Delete the driver
+            if self.db.delete_driver(driver_code):
+                QMessageBox.information(
+                    self,
+                    "Success",
+                    "Driver deleted successfully!"
+                )
+                self.load_drivers_table()  # Refresh the table
+                self.clear_form()  # Clear the form
+            else:
+                QMessageBox.critical(
+                    self,
+                    "Error",
+                    "Failed to delete driver"
+                )
 
     def clear_form(self):
         """Clear all form fields"""
