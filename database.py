@@ -304,5 +304,139 @@ class Database(QObject):
             return driver
         return None
 
+    def update_driver(self, driver_code, first_name, last_name, driver_type, driver_photo, cr_expiry_date, or_expiry_date, driver_license_no):
+        """Update driver information"""
+        query = QSqlQuery()
+        query.prepare("""
+            UPDATE drivers 
+            SET first_name = $1, 
+                last_name = $2, 
+                driver_type = $3,
+                driver_photo = $4, 
+                cr_expiry_date = $5::date, 
+                or_expiry_date = $6::date,
+                driver_license_no = $7
+            WHERE driver_code = $8
+            RETURNING driver_id
+        """)
+        
+        # Format dates as strings
+        cr_date_str = cr_expiry_date.strftime('%Y-%m-%d')
+        or_date_str = or_expiry_date.strftime('%Y-%m-%d')
+        
+        query.addBindValue(first_name)
+        query.addBindValue(last_name)
+        query.addBindValue(driver_type)
+        query.addBindValue(driver_photo)
+        query.addBindValue(cr_date_str)
+        query.addBindValue(or_date_str)
+        query.addBindValue(driver_license_no)
+        query.addBindValue(driver_code)
+        
+        success = query.exec()
+        if not success:
+            print(f"Driver update error: {query.lastError().text()}")
+        return success
+
+    def update_vehicle_with_relations(self, driver_code, plate_id, plate_number, model, proprietor_first_name, proprietor_last_name):
+        """Update vehicle and proprietor information"""
+        self.db.transaction()
+        try:
+            # Get driver_id first
+            driver_id_query = QSqlQuery()
+            driver_id_query.prepare("SELECT driver_id FROM drivers WHERE driver_code = $1")
+            driver_id_query.addBindValue(driver_code)
+            
+            if not driver_id_query.exec():
+                raise Exception(f"Driver query failed: {driver_id_query.lastError().text()}")
+            if not driver_id_query.next():
+                raise Exception("Driver not found")
+                
+            driver_id = driver_id_query.value(0)
+
+            # Get or create proprietor
+            proprietor_id = self.update_or_create_proprietor(
+                proprietor_first_name, 
+                proprietor_last_name
+            )
+            if not proprietor_id:
+                raise Exception("Failed to update/create proprietor")
+
+            # Update vehicle
+            vehicle_query = QSqlQuery()
+            vehicle_query.prepare("""
+                UPDATE vehicles 
+                SET plate_number = $1,
+                    model = $2,
+                    proprietor_id = $3
+                WHERE driver_id = $4 AND plate_id = $5
+                RETURNING vehicle_id
+            """)
+            
+            vehicle_query.addBindValue(plate_number)
+            vehicle_query.addBindValue(model)
+            vehicle_query.addBindValue(proprietor_id)
+            vehicle_query.addBindValue(driver_id)
+            vehicle_query.addBindValue(plate_id)
+
+            if not vehicle_query.exec():
+                raise Exception(f"Vehicle update failed: {vehicle_query.lastError().text()}")
+            
+            if not vehicle_query.next():
+                # If update failed because vehicle doesn't exist, try to insert
+                vehicle_query.prepare("""
+                    INSERT INTO vehicles (plate_id, plate_number, model, proprietor_id, driver_id)
+                    VALUES ($1, $2, $3, $4, $5)
+                    RETURNING vehicle_id
+                """)
+                
+                vehicle_query.addBindValue(plate_id)
+                vehicle_query.addBindValue(plate_number)
+                vehicle_query.addBindValue(model)
+                vehicle_query.addBindValue(proprietor_id)
+                vehicle_query.addBindValue(driver_id)
+                
+                if not vehicle_query.exec():
+                    raise Exception(f"Vehicle insert failed: {vehicle_query.lastError().text()}")
+
+            self.db.commit()
+            return True
+
+        except Exception as e:
+            self.db.rollback()
+            print(f"Error updating vehicle with relations: {str(e)}")
+            return False
+
+    def update_or_create_proprietor(self, first_name, last_name):
+        """Update proprietor if exists, create if not"""
+        query = QSqlQuery()
+        
+        # First try to find existing proprietor
+        query.prepare("""
+            SELECT proprietor_id 
+            FROM proprietors 
+            WHERE first_name = $1 AND last_name = $2
+        """)
+        query.addBindValue(first_name)
+        query.addBindValue(last_name)
+        
+        if query.exec() and query.next():
+            return query.value(0)
+        
+        # If not found, create new proprietor
+        query.prepare("""
+            INSERT INTO proprietors (first_name, last_name)
+            VALUES ($1, $2)
+            RETURNING proprietor_id
+        """)
+        query.addBindValue(first_name)
+        query.addBindValue(last_name)
+        
+        if query.exec() and query.next():
+            return query.value(0)
+        
+        print(f"Proprietor error: {query.lastError().text()}")
+        return None
+
     def close(self):
         self.db.close()

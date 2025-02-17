@@ -173,6 +173,7 @@ class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
         self.actionExit.triggered.connect(self.close)
         self.uploadButton.clicked.connect(self.upload_photo)
         self.submitButton.clicked.connect(self.register_driver)
+        self.updateButton.clicked.connect(self.update_driver)  # Add this line
         
         # Set default photo and initialize photo path
         self.userPhoto.setPixmap(QPixmap("media/unknown.jpg"))
@@ -236,14 +237,11 @@ class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
                 
             self.license_noValue.setText(driver['driver_license_no'])
             
-            # Set dates - handle both string and QDate formats
             try:
-                # Try parsing as string first
                 if isinstance(driver['cr_expiry_date'], str):
                     cr_date = QDate.fromString(driver['cr_expiry_date'], "yyyy-MM-dd")
                     or_date = QDate.fromString(driver['or_expiry_date'], "yyyy-MM-dd")
                 else:
-                    # If not string, assume it's a date object
                     cr_date = QDate(driver['cr_expiry_date'])
                     or_date = QDate(driver['or_expiry_date'])
                     
@@ -253,11 +251,9 @@ class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
                     self.orExpiry.setDate(or_date)
             except Exception as e:
                 print(f"Error setting dates: {e}")
-                # Set to current date as fallback
                 self.crExpiry.setDate(QDate.currentDate())
                 self.orExpiry.setDate(QDate.currentDate())
             
-            # Set photo
             self.driver_photo_path = driver['driver_photo']
             self.userPhoto.setPixmap(QPixmap(driver['driver_photo']))
             
@@ -286,7 +282,6 @@ class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
             if not os.path.exists("images"):
                 os.makedirs("images")
 
-            # Get extension from the original file
             extension = os.path.splitext(file_name)[1]
 
             # Use first and last name for new filename
@@ -380,6 +375,90 @@ class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
                 self,
                 "Error",
                 "Failed to register vehicle information"
+            )
+
+    def update_driver(self):
+        """Handle driver update"""
+        # Get driver values
+        driver_code = self.driver_codeValue.text()
+        if not driver_code:
+            QMessageBox.warning(
+                self,
+                "Validation Error",
+                "Please select a driver to update by clicking on a row in the table."
+            )
+            return
+
+        # Get updated values from form
+        first_name = self.dfirst_nameValue.text()
+        last_name = self.dlast_nameValue.text()
+        driver_type = self.driverTypeComboBox.currentText()
+        license_no = self.license_noValue.text()
+        cr_expiry = self.crExpiry.date().toPyDate()
+        or_expiry = self.orExpiry.date().toPyDate()
+
+        # Get updated vehicle values
+        plate_id = self.plate_idValue.text()
+        plate_no = self.plate_noValue.text()
+        model = self.modelValue.text()
+
+        # Get updated proprietor values
+        proprietor_first_name = self.pfirst_nameValue.text()
+        proprietor_last_name = self.plast_nameValue.text()
+
+        # Basic validation
+        if not all([first_name, last_name, driver_type, license_no,
+                   plate_id, plate_no, model,
+                   proprietor_first_name, proprietor_last_name]):
+            QMessageBox.warning(
+                self,
+                "Validation Error",
+                "Please fill in all required fields."
+            )
+            return
+
+        # Update driver
+        driver_success = self.db.update_driver(
+            driver_code=driver_code,
+            first_name=first_name,
+            last_name=last_name,
+            driver_type=driver_type,
+            driver_photo=self.driver_photo_path,
+            cr_expiry_date=cr_expiry,
+            or_expiry_date=or_expiry,
+            driver_license_no=license_no
+        )
+
+        if not driver_success:
+            QMessageBox.critical(
+                self,
+                "Error",
+                "Failed to update driver information"
+            )
+            return
+
+        # Update vehicle and proprietor
+        vehicle_success = self.db.update_vehicle_with_relations(
+            driver_code=driver_code,
+            plate_id=plate_id,
+            plate_number=plate_no,
+            model=model,
+            proprietor_first_name=proprietor_first_name,
+            proprietor_last_name=proprietor_last_name
+        )
+
+        if vehicle_success:
+            QMessageBox.information(
+                self,
+                "Success",
+                "Driver, vehicle, and proprietor information updated successfully!"
+            )
+            self.load_drivers_table()  # Refresh the table
+        else:
+            QMessageBox.critical(
+                self,
+                "Error",
+                "Failed to update vehicle information"
             )
 
     def clear_form(self):
