@@ -173,8 +173,9 @@ class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
         self.actionExit.triggered.connect(self.close)
         self.uploadButton.clicked.connect(self.upload_photo)
         self.submitButton.clicked.connect(self.register_driver)
-        self.updateButton.clicked.connect(self.update_driver)  # Add this line
+        self.updateButton.clicked.connect(self.update_driver)  
         self.deleteButton.clicked.connect(self.delete_driver)
+        self.searchButton.clicked.connect(self.search_drivers)  
 
         # Set default photo and initialize photo path
         self.userPhoto.setPixmap(QPixmap("media/unknown.jpg"))
@@ -524,6 +525,30 @@ class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
         # Clear proprietor fields
         self.pfirst_nameValue.clear()
         self.plast_nameValue.clear()
+
+    def search_drivers(self):
+        """Handle search button click"""
+        search_text = self.searchValue.text().strip()
+        
+        if not search_text:
+            # If search is empty, show all drivers
+            self.load_drivers_table()
+            return
+        
+        # Perform search
+        drivers = self.db.search_drivers(search_text)
+        
+        # Update table with search results
+        self.detailsTable.setRowCount(0)  # Clear existing rows
+        
+        for driver in drivers:
+            row = self.detailsTable.rowCount()
+            self.detailsTable.insertRow(row)
+            
+            # Add items to row
+            self.detailsTable.setItem(row, 0, QTableWidgetItem(driver['driver_code']))
+            self.detailsTable.setItem(row, 1, QTableWidgetItem(driver['full_name']))
+            self.detailsTable.setItem(row, 2, QTableWidgetItem(driver['plate_number']))
 
     def logout(self):
         """Handle logout button click"""

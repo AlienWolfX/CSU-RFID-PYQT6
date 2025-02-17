@@ -476,5 +476,38 @@ class Database(QObject):
             print(f"Error deleting driver: {str(e)}")
             return False
 
+    def search_drivers(self, search_text):
+        """Search drivers by name (first + last), RFID code, or plate number"""
+        query = QSqlQuery()
+        query.prepare("""
+            SELECT DISTINCT
+                d.driver_code,
+                d.first_name || ' ' || d.last_name as full_name,
+                v.plate_number
+            FROM drivers d
+            LEFT JOIN vehicles v ON v.driver_id = d.driver_id
+            WHERE 
+                d.driver_code ILIKE $1 OR
+                LOWER(d.first_name || ' ' || d.last_name) LIKE LOWER($1) OR
+                v.plate_number ILIKE $1
+            ORDER BY full_name
+        """)
+        
+        # Add wildcards for partial matching
+        search_pattern = f"%{search_text}%"
+        query.addBindValue(search_pattern)
+        
+        drivers = []
+        if query.exec():
+            while query.next():
+                drivers.append({
+                    'driver_code': query.value(0),
+                    'full_name': query.value(1),
+                    'plate_number': query.value(2) or "No vehicle"
+                })
+        else:
+            print(f"Search error: {query.lastError().text()}")
+        return drivers
+
     def close(self):
         self.db.close()
