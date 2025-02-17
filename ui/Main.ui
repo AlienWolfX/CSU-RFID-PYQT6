@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>1037</width>
-    <height>815</height>
+    <height>816</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>CSU-VecMon</string>
+   <string>CSU-VeMon</string>
   </property>
   <property name="windowIcon">
    <iconset>
@@ -272,7 +272,7 @@
       </font>
      </property>
      <property name="text">
-      <string>CSU VecMon</string>
+      <string>CSU VeMon</string>
      </property>
     </widget>
    </widget>

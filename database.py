@@ -7,7 +7,6 @@ load_dotenv()
 class Database(QObject):
     def __init__(self):
         super().__init__()
-        # Switch from QMYSQL to QPSQL
         self.db = QSqlDatabase.addDatabase('QPSQL')
         self.db.setHostName(os.getenv("DB_HOST"))
         self.db.setDatabaseName(os.getenv("DB_NAME"))
@@ -92,15 +91,13 @@ class Database(QObject):
         query.addBindValue(last_name)
         query.addBindValue(driver_type)
         query.addBindValue(driver_photo)
-        query.addBindValue(cr_expiry_date.strftime('%Y-%m-%d'))  # Format date as string
-        query.addBindValue(or_expiry_date.strftime('%Y-%m-%d'))  # Format date as string
+        query.addBindValue(cr_expiry_date.strftime('%Y-%m-%d')) 
+        query.addBindValue(or_expiry_date.strftime('%Y-%m-%d'))
         query.addBindValue(driver_license_no)
         
         success = query.exec()
         if not success:
             print(f"Database Error: {query.lastError().text()}")
-            print(f"Query: {query.lastQuery()}")  # Debug: print the actual query
-            print(f"Values: {[driver_code, first_name, last_name, driver_type, driver_photo, cr_expiry_date, or_expiry_date, driver_license_no]}")  # Debug: print values
         return success
 
     def get_driver(self, driver_id):
@@ -180,7 +177,7 @@ class Database(QObject):
         
         success = query.exec()
         if success and query.next():
-            return query.value(0)  # Return the new proprietor_id
+            return query.value(0) 
         print(f"Database Error: {query.lastError().text()}")
         return None
 
@@ -227,6 +224,42 @@ class Database(QObject):
             self.db.rollback()
             print(f"Transaction failed: {str(e)}")
             return False
+
+    def get_plate_by_driver_code(self, driver_code):
+        query = QSqlQuery()
+        query.prepare("""
+            SELECT v.plate_number
+            FROM vehicles v
+            JOIN drivers d ON v.driver_id = d.driver_id
+            WHERE d.driver_code = $1
+        """)
+        query.addBindValue(driver_code)
+        if query.exec() and query.next():
+            return query.value(0)
+        return None
+
+    def get_all_drivers(self):
+        """Fetch all drivers with their vehicle information"""
+        query = QSqlQuery()
+        query.prepare("""
+            SELECT 
+                d.driver_code,
+                d.first_name || ' ' || d.last_name as full_name,
+                v.plate_number
+            FROM drivers d
+            LEFT JOIN vehicles v ON v.driver_id = d.driver_id
+            ORDER BY d.first_name, d.last_name
+        """)
+        
+        drivers = []
+        if query.exec():
+            while query.next():
+                drivers.append({
+                    'driver_code': query.value(0),
+                    'full_name': query.value(1),
+                    'plate_number': query.value(2) or "No vehicle"
+                })
+        return drivers
 
     def close(self):
         self.db.close()

@@ -12,7 +12,7 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1037, 815)
+        MainWindow.resize(1037, 816)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("ui\\../images/csuLogo.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
         MainWindow.setWindowIcon(icon)
@@ -147,7 +147,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "CSU-RFID"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "CSU-VeMon"))
         item = self.tableLogs.horizontalHeaderItem(0)
         item.setText(_translate("MainWindow", "RFID"))
         item = self.tableLogs.horizontalHeaderItem(1)
@@ -159,7 +159,7 @@ class Ui_MainWindow(object):
         self.nameLabel.setText(_translate("MainWindow", "Name:"))
         self.rfidLabel.setText(_translate("MainWindow", "RFID:"))
         self.plateLabel.setText(_translate("MainWindow", "Plate No:"))
-        self.csuLabel.setText(_translate("MainWindow", "CSU VecMon"))
+        self.csuLabel.setText(_translate("MainWindow", "CSU VeMon"))
         self.buttonLogout.setText(_translate("MainWindow", "LOGOUT"))
         self.menuFile.setTitle(_translate("MainWindow", "File"))
         self.menuExport_to.setTitle(_translate("MainWindow", "Export to"))

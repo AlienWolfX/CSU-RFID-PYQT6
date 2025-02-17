@@ -1,7 +1,7 @@
 import sys
 import serial
 import time
-from PyQt6.QtWidgets import QApplication, QDialog, QMainWindow, QTableWidgetItem, QMessageBox, QFileDialog
+from PyQt6.QtWidgets import QApplication, QDialog, QMainWindow, QTableWidgetItem, QMessageBox, QFileDialog, QHeaderView
 from PyQt6.QtCore import Qt, QThread, pyqtSignal, QDate
 from PyQt6.QtGui import QPixmap
 from forms.LoginForm import Ui_LoginDialog
@@ -144,12 +144,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if driver:
             name_str = f"{driver['first_name']} {driver['last_name']}"
             self.userPhoto.setPixmap(QPixmap(driver['driver_photo']))
+            plate_no = self.db.get_plate_by_driver_code(driver["driver_code"]) or "Unknown"
         else:
             name_str = "Unknown"
+            plate_no = "Unknown"
             self.userPhoto.setPixmap(QPixmap("media/unknown.jpg"))
 
         self.rfidValue.setText(code)
         self.nameValue.setText(name_str)
+
+        # Add to logs
+        self.add_table_entry(code, name_str, plate_no)
 
     def closeEvent(self, event):
         """Handles the window close event to stop the RFID reader thread."""
@@ -176,6 +181,37 @@ class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
         # Set date formats
         self.crExpiry.setDisplayFormat("yyyy-MM-dd")
         self.orExpiry.setDisplayFormat("yyyy-MM-dd")
+        
+        # Setup driver type combo box
+        self.driverTypeComboBox.clear()
+        self.driverTypeComboBox.addItems(["professional", "non-professional", "student"])
+        
+        # Setup details table
+        self.setup_details_table()
+        self.load_drivers_table()
+
+    def setup_details_table(self):
+        """Configure the details table"""
+        self.detailsTable.setColumnCount(3)
+        self.detailsTable.setHorizontalHeaderLabels(["Driver Code", "Name", "Plate No."])
+        header = self.detailsTable.horizontalHeader()
+        header.setSectionResizeMode(0, QHeaderView.ResizeMode.ResizeToContents)
+        header.setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
+        header.setSectionResizeMode(2, QHeaderView.ResizeMode.ResizeToContents)
+        
+    def load_drivers_table(self):
+        """Load all drivers into the details table"""
+        self.detailsTable.setRowCount(0)  # Clear existing rows
+        drivers = self.db.get_all_drivers()
+        
+        for driver in drivers:
+            row = self.detailsTable.rowCount()
+            self.detailsTable.insertRow(row)
+            
+            # Add items to row
+            self.detailsTable.setItem(row, 0, QTableWidgetItem(driver['driver_code']))
+            self.detailsTable.setItem(row, 1, QTableWidgetItem(driver['full_name']))
+            self.detailsTable.setItem(row, 2, QTableWidgetItem(driver['plate_number']))
 
     def upload_photo(self):
         file_name, _ = QFileDialog.getOpenFileName(
@@ -217,7 +253,7 @@ class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
         driver_code = self.driver_codeValue.text()
         first_name = self.dfirst_nameValue.text()
         last_name = self.dlast_nameValue.text()
-        driver_type = self.driver_typeValue.text()
+        driver_type = self.driverTypeComboBox.currentText()  # Get selected type from combo box
         license_no = self.license_noValue.text()
         cr_expiry = self.crExpiry.date().toPyDate()
         or_expiry = self.orExpiry.date().toPyDate()
@@ -278,6 +314,7 @@ class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
                 "Success",
                 "Driver, vehicle, and proprietor registered successfully!"
             )
+            self.load_drivers_table()  # Refresh the table
             self.clear_form()
         else:
             QMessageBox.critical(
@@ -292,7 +329,7 @@ class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
         self.driver_codeValue.clear()
         self.dfirst_nameValue.clear()
         self.dlast_nameValue.clear()
-        self.driver_typeValue.clear()
+        self.driverTypeComboBox.setCurrentIndex(0)  # Reset to first item
         self.license_noValue.clear()
         self.crExpiry.setDate(QDate.currentDate())
         self.orExpiry.setDate(QDate.currentDate())
