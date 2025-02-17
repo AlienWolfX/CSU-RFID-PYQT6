@@ -261,5 +261,48 @@ class Database(QObject):
                 })
         return drivers
 
+    def get_driver_details(self, driver_code):
+        """Get complete driver details including vehicle and proprietor info"""
+        query = QSqlQuery()
+        query.prepare("""
+            SELECT 
+                d.*,
+                TO_CHAR(d.cr_expiry_date, 'YYYY-MM-DD') as cr_expiry_date_str,
+                TO_CHAR(d.or_expiry_date, 'YYYY-MM-DD') as or_expiry_date_str,
+                v.plate_id,
+                v.plate_number,
+                v.model,
+                p.first_name as p_first_name,
+                p.last_name as p_last_name
+            FROM drivers d
+            LEFT JOIN vehicles v ON v.driver_id = d.driver_id
+            LEFT JOIN proprietors p ON v.proprietor_id = p.proprietor_id
+            WHERE d.driver_code = ?
+        """)
+        query.addBindValue(driver_code)
+        
+        if query.exec() and query.next():
+            driver = {
+                'driver_code': query.value('driver_code'),
+                'first_name': query.value('first_name'),
+                'last_name': query.value('last_name'),
+                'driver_type': query.value('driver_type'),
+                'driver_photo': query.value('driver_photo'),
+                'driver_license_no': query.value('driver_license_no'),
+                'cr_expiry_date': query.value('cr_expiry_date_str'),
+                'or_expiry_date': query.value('or_expiry_date_str'),
+                'vehicle': {
+                    'plate_id': query.value('plate_id'),
+                    'plate_number': query.value('plate_number'),
+                    'model': query.value('model')
+                } if query.value('plate_id') else None,
+                'proprietor': {
+                    'first_name': query.value('p_first_name'),
+                    'last_name': query.value('p_last_name')
+                } if query.value('p_first_name') else None
+            }
+            return driver
+        return None
+
     def close(self):
         self.db.close()

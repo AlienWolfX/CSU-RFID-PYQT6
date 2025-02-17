@@ -190,6 +190,9 @@ class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
         self.setup_details_table()
         self.load_drivers_table()
 
+        # Connect table selection signal
+        self.detailsTable.itemClicked.connect(self.on_table_row_clicked)
+
     def setup_details_table(self):
         """Configure the details table"""
         self.detailsTable.setColumnCount(3)
@@ -212,6 +215,62 @@ class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
             self.detailsTable.setItem(row, 0, QTableWidgetItem(driver['driver_code']))
             self.detailsTable.setItem(row, 1, QTableWidgetItem(driver['full_name']))
             self.detailsTable.setItem(row, 2, QTableWidgetItem(driver['plate_number']))
+
+    def on_table_row_clicked(self, item):
+        """Handle row click in details table"""
+        row = item.row()
+        driver_code = self.detailsTable.item(row, 0).text()
+        
+        # Fetch full driver details from database
+        driver = self.db.get_driver_details(driver_code)
+        if driver:
+            # Set driver fields
+            self.driver_codeValue.setText(driver['driver_code'])
+            self.dfirst_nameValue.setText(driver['first_name'])
+            self.dlast_nameValue.setText(driver['last_name'])
+            
+            # Set driver type in combo box
+            index = self.driverTypeComboBox.findText(driver['driver_type'])
+            if index >= 0:
+                self.driverTypeComboBox.setCurrentIndex(index)
+                
+            self.license_noValue.setText(driver['driver_license_no'])
+            
+            # Set dates - handle both string and QDate formats
+            try:
+                # Try parsing as string first
+                if isinstance(driver['cr_expiry_date'], str):
+                    cr_date = QDate.fromString(driver['cr_expiry_date'], "yyyy-MM-dd")
+                    or_date = QDate.fromString(driver['or_expiry_date'], "yyyy-MM-dd")
+                else:
+                    # If not string, assume it's a date object
+                    cr_date = QDate(driver['cr_expiry_date'])
+                    or_date = QDate(driver['or_expiry_date'])
+                    
+                if cr_date.isValid():
+                    self.crExpiry.setDate(cr_date)
+                if or_date.isValid():
+                    self.orExpiry.setDate(or_date)
+            except Exception as e:
+                print(f"Error setting dates: {e}")
+                # Set to current date as fallback
+                self.crExpiry.setDate(QDate.currentDate())
+                self.orExpiry.setDate(QDate.currentDate())
+            
+            # Set photo
+            self.driver_photo_path = driver['driver_photo']
+            self.userPhoto.setPixmap(QPixmap(driver['driver_photo']))
+            
+            # Set vehicle fields
+            if driver.get('vehicle'):
+                self.plate_idValue.setText(driver['vehicle']['plate_id'])
+                self.plate_noValue.setText(driver['vehicle']['plate_number'])
+                self.modelValue.setText(driver['vehicle']['model'])
+            
+            # Set proprietor fields
+            if driver.get('proprietor'):
+                self.pfirst_nameValue.setText(driver['proprietor']['first_name'])
+                self.plast_nameValue.setText(driver['proprietor']['last_name'])
 
     def upload_photo(self):
         file_name, _ = QFileDialog.getOpenFileName(
