@@ -61,11 +61,36 @@ class Database(QObject):
             return query.value(0)
         return None
 
-    def log_entry(self, rfid_tag):
+    def log_entry(self, rfid_tag, remarks):
+        """Log an entry with remarks and driver reference"""
         query = QSqlQuery()
-        query.prepare('INSERT INTO logs (rfid_tag) VALUES (?)')
+        
+        # First get driver_id from rfid_tag
+        driver_query = QSqlQuery()
+        driver_query.prepare("""
+            SELECT driver_id 
+            FROM drivers 
+            WHERE driver_code = $1
+        """)
+        driver_query.addBindValue(rfid_tag)
+        
+        driver_id = None
+        if driver_query.exec() and driver_query.next():
+            driver_id = driver_query.value(0)
+        
+        # Insert log entry
+        query.prepare("""
+            INSERT INTO logs (rfid_tag, driver_id, remarks) 
+            VALUES ($1, $2, $3)
+        """)
         query.addBindValue(rfid_tag)
-        return query.exec()
+        query.addBindValue(driver_id)
+        query.addBindValue(remarks)
+        
+        success = query.exec()
+        if not success:
+            print(f"Log entry error: {query.lastError().text()}")
+        return success
 
     def log_login_attempt(self, user_id, success):
         query = QSqlQuery()
@@ -148,18 +173,6 @@ class Database(QObject):
         query.addBindValue(model)   
         query.addBindValue(proprietor_id)
         query.addBindValue(driver_id)
-        return query.exec()
-
-    def log_vehicle_action(self, vehicle_id, action, changed_by, details):
-        query = QSqlQuery()
-        query.prepare('''
-            INSERT INTO vehicle_logs (vehicle_id, action, changed_by, details)
-            VALUES (?, ?, ?, ?)
-        ''')
-        query.addBindValue(vehicle_id)
-        query.addBindValue(action)
-        query.addBindValue(changed_by)
-        query.addBindValue(details)
         return query.exec()
 
     def add_proprietor(self, first_name, last_name):
@@ -508,6 +521,27 @@ class Database(QObject):
         else:
             print(f"Search error: {query.lastError().text()}")
         return drivers
+
+    def get_last_log(self, rfid_tag):
+        """Get the last log entry for a given RFID tag"""
+        query = QSqlQuery()
+        query.prepare("""
+            SELECT 
+                TO_CHAR(time_logged, 'HH12:MI AM') as time_logged,
+                remarks
+            FROM logs 
+            WHERE rfid_tag = $1
+            ORDER BY time_logged DESC
+            LIMIT 1
+        """)
+        query.addBindValue(rfid_tag)
+        
+        if query.exec() and query.next():
+            return {
+                'time_logged': query.value(0),
+                'remarks': query.value(1)
+            }
+        return None
 
     def close(self):
         self.db.close()

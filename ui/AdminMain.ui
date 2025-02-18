@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1481</width>
-    <height>587</height>
+    <height>586</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -670,36 +670,9 @@
       <rect>
        <x>12</x>
        <y>10</y>
-       <width>281</width>
+       <width>291</width>
        <height>31</height>
       </rect>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="searchButton">
-     <property name="geometry">
-      <rect>
-       <x>300</x>
-       <y>10</y>
-       <width>101</width>
-       <height>28</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="styleSheet">
-      <string notr="true"/>
-     </property>
-     <property name="text">
-      <string>Search</string>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>../images/search.svg</normaloff>../images/search.svg</iconset>
      </property>
     </widget>
     <widget class="QTableWidget" name="detailsTable">
@@ -730,6 +703,33 @@
       </property>
      </column>
     </widget>
+    <widget class="QPushButton" name="searchButton">
+     <property name="geometry">
+      <rect>
+       <x>300</x>
+       <y>10</y>
+       <width>101</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="text">
+      <string>Search</string>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>../images/search.svg</normaloff>../images/search.svg</iconset>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -750,8 +750,6 @@
       <string>Export to</string>
      </property>
      <addaction name="actionCSV"/>
-     <addaction name="action_xlsx"/>
-     <addaction name="action_txt"/>
     </widget>
     <addaction name="menuExport_to"/>
     <addaction name="separator"/>

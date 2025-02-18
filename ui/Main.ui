@@ -71,6 +71,11 @@
       <string>Time</string>
      </property>
     </column>
+    <column>
+     <property name="text">
+      <string>Remarks</string>
+     </property>
+    </column>
    </widget>
    <widget class="QFrame" name="frameInfo">
     <property name="enabled">
@@ -259,7 +264,7 @@
     <widget class="QLabel" name="csuLabel">
      <property name="geometry">
       <rect>
-       <x>80</x>
+       <x>100</x>
        <y>220</y>
        <width>191</width>
        <height>31</height>

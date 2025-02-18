@@ -37,7 +37,7 @@ class RFIDReader(QThread):
                     self.rfid_tag_signal.emit(rfid_tag)
             except Exception as e:
                 print(f"Error reading RFID tag: {e}")
-                time.sleep(1)  # Prevent rapid error messages
+                time.sleep(1) 
 
         if self.ser and self.ser.is_open:
             self.ser.close()
@@ -46,7 +46,7 @@ class RFIDReader(QThread):
         """Reads an RFID tag and returns a hexadecimal string."""
         BUFFER_SIZE = 3  # Get 3 bytes from 6 hex characters
         start_time = time.time()
-        byte_data = bytearray(BUFFER_SIZE)  # Pre-allocate buffer
+        byte_data = bytearray(BUFFER_SIZE) 
         bytes_read = 0
 
         while time.time() - start_time < READ_TIMEOUT:
@@ -107,7 +107,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.tableLogs.setSortingEnabled(True)
         self.tableLogs.sortItems(3, Qt.SortOrder.DescendingOrder)
         self.last_log_times = {}
-        self.LOG_TIMEOUT = 300
+        self.LOG_TIMEOUT = 120  # 2 minutes
+
+        # Setup table columns
+        self.tableLogs.setColumnCount(5)
+        self.tableLogs.setHorizontalHeaderLabels([
+            "RFID", "Name", "Plate No.", "Time", "Remarks"
+        ])
+        header = self.tableLogs.horizontalHeader()
+        header.setSectionResizeMode(0, QHeaderView.ResizeMode.ResizeToContents)
+        header.setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
+        header.setSectionResizeMode(2, QHeaderView.ResizeMode.ResizeToContents)
+        header.setSectionResizeMode(3, QHeaderView.ResizeMode.ResizeToContents)
+        header.setSectionResizeMode(4, QHeaderView.ResizeMode.ResizeToContents)
 
     def logout(self):
         """Handle logout button click"""
@@ -117,26 +129,35 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def add_table_entry(self, rfid, name, plate):
         current_time = datetime.now()
         
-        # Check if RFID was logged recently
-        if rfid in self.last_log_times:
-            time_diff = (current_time - self.last_log_times[rfid]).total_seconds()
-            if time_diff < self.LOG_TIMEOUT:
-                return  # Skip logging if timeout hasn't passed
+        # Get last log for this RFID
+        last_log = self.db.get_last_log(rfid)
+        remarks = "Time In"
         
-        # Update last log time and add entry
+        if last_log:
+            last_time = datetime.strptime(last_log['time_logged'], "%I:%M %p")
+            time_diff = (current_time - last_time.replace(year=current_time.year, 
+                                                        month=current_time.month, 
+                                                        day=current_time.day)).total_seconds()
+            
+            if time_diff < self.LOG_TIMEOUT:
+                return
+            else:
+                remarks = "Time Out" if last_log['remarks'] == "Time In" else "Time In"
+        
         self.last_log_times[rfid] = current_time
-        time_str = current_time.strftime("%Y-%m-%d %H:%M:%S")
+        time_str = current_time.strftime("%I:%M %p")
+        
+        self.db.log_entry(rfid, remarks)
         
         row = self.tableLogs.rowCount()
         self.tableLogs.insertRow(row)
         
-        # Add items to row
         self.tableLogs.setItem(row, 0, QTableWidgetItem(rfid))
         self.tableLogs.setItem(row, 1, QTableWidgetItem(name))
         self.tableLogs.setItem(row, 2, QTableWidgetItem(plate))
         self.tableLogs.setItem(row, 3, QTableWidgetItem(time_str))
+        self.tableLogs.setItem(row, 4, QTableWidgetItem(remarks))
         
-        # Resort table 
         self.tableLogs.sortItems(3, Qt.SortOrder.DescendingOrder)
 
     def update_rfid_value(self, code):
@@ -152,8 +173,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.rfidValue.setText(code)
         self.nameValue.setText(name_str)
+        self.plateValue.setText(plate_no)
 
-        # Add to logs
         self.add_table_entry(code, name_str, plate_no)
 
     def closeEvent(self, event):
