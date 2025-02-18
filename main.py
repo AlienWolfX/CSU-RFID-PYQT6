@@ -7,7 +7,7 @@ from PyQt6.QtGui import QPixmap
 from forms.LoginForm import Ui_LoginDialog
 from forms.Main import Ui_MainWindow
 from forms.AdminMain import Ui_AdminMainWindow
-from datetime import datetime
+from datetime import datetime, timedelta 
 from database import Database
 
 READ_TIMEOUT = 2
@@ -189,6 +189,7 @@ class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
         super().__init__()
         self.setupUi(self)
         self.db = Database()
+        from datetime import timedelta  # Add this import
         
         # Connect signals
         self.buttonLogout.clicked.connect(self.logout)
@@ -219,6 +220,7 @@ class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
         self.detailsTable.itemClicked.connect(self.on_table_row_clicked)
 
         self.actionCSV.triggered.connect(self.export_to_csv)
+        self.action_txt_2.triggered.connect(self.export_to_txt)
 
     def setup_details_table(self):
         """Configure the details table"""
@@ -277,9 +279,55 @@ class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
                     f"Failed to export logs: {str(e)}"
                 )
         
+    def export_to_txt(self):
+        """Export logs to text file"""
+        file_name, _ = QFileDialog.getSaveFileName(
+            self,
+            "Export Logs to Text",
+            "",
+            "Text Files (*.txt)"
+        )
+        
+        if file_name:
+            try:
+                logs = self.db.get_all_logs()
+                
+                with open(file_name, 'w') as file:
+                    file.write("CSU VeMon Logs\n")
+                    file.write("=" * 50 + "\n\n")
+                    
+                    file.write(f"{'RFID':<15} {'Name':<30} {'Plate No.':<15} {'Time':<12} {'Remarks':<10}\n")
+                    file.write("-" * 82 + "\n")
+                    
+                    for log in logs:
+                        time_logged = datetime.strptime(log['time_logged'], "%I:%M %p")
+                        ph_time = time_logged + timedelta(hours=8)
+                        time_str = ph_time.strftime("%I:%M %p")
+                        
+                        file.write(
+                            f"{log['rfid_tag']:<15} "
+                            f"{log['name'][:30]:<30} "
+                            f"{log['plate_no']:<15} "
+                            f"{time_str:<12} "
+                            f"{log['remarks']:<10}\n"
+                        )
+                
+                QMessageBox.information(
+                    self,
+                    "Success",
+                    f"Logs exported successfully to {file_name}"
+                )
+                
+            except Exception as e:
+                QMessageBox.critical(
+                    self,
+                    "Error",
+                    f"Failed to export logs: {str(e)}"
+                )
+
     def load_drivers_table(self):
         """Load all drivers into the details table"""
-        self.detailsTable.setRowCount(0)  # Clear existing rows
+        self.detailsTable.setRowCount(0) 
         drivers = self.db.get_all_drivers()
         
         for driver in drivers:
