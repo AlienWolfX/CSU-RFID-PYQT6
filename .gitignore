@@ -8,3 +8,4 @@ compileUI.py
 readRFID.py
 .env
 encrypt.py
+test.csv

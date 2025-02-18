@@ -121,6 +121,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         header.setSectionResizeMode(3, QHeaderView.ResizeMode.ResizeToContents)
         header.setSectionResizeMode(4, QHeaderView.ResizeMode.ResizeToContents)
 
+
     def logout(self):
         """Handle logout button click"""
         self.rfidReader.stop()
@@ -217,6 +218,8 @@ class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
         # Connect table selection signal
         self.detailsTable.itemClicked.connect(self.on_table_row_clicked)
 
+        self.actionCSV.triggered.connect(self.export_to_csv)
+
     def setup_details_table(self):
         """Configure the details table"""
         self.detailsTable.setColumnCount(3)
@@ -225,6 +228,54 @@ class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
         header.setSectionResizeMode(0, QHeaderView.ResizeMode.ResizeToContents)
         header.setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
         header.setSectionResizeMode(2, QHeaderView.ResizeMode.ResizeToContents)
+    
+    def export_to_csv(self):
+        """Export logs to CSV file"""
+        file_name, _ = QFileDialog.getSaveFileName(
+            self,
+            "Export Logs to CSV",
+            "",
+            "CSV Files (*.csv)"
+        )
+        
+        if file_name:
+            try:
+                logs = self.db.get_all_logs()
+                
+                # Write to CSV
+                import csv
+                from datetime import datetime, timedelta
+                
+                with open(file_name, 'w', newline='') as file:
+                    writer = csv.writer(file)
+                    writer.writerow(['RFID', 'Name', 'Plate No.', 'Time', 'Remarks'])
+                    
+                    for log in logs:
+                        # Parse time and add UTC+8
+                        time_logged = datetime.strptime(log['time_logged'], "%I:%M %p")
+                        ph_time = time_logged + timedelta(hours=8)  # Add 8 hours for UTC+8
+                        time_str = ph_time.strftime("%I:%M %p")
+                        
+                        writer.writerow([
+                            log['rfid_tag'],
+                            log['name'],
+                            log['plate_no'],
+                            time_str,
+                            log['remarks']
+                        ])
+                
+                QMessageBox.information(
+                    self,
+                    "Success",
+                    f"Logs exported successfully to {file_name}"
+                )
+                
+            except Exception as e:
+                QMessageBox.critical(
+                    self,
+                    "Error",
+                    f"Failed to export logs: {str(e)}"
+                )
         
     def load_drivers_table(self):
         """Load all drivers into the details table"""

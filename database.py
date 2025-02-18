@@ -543,5 +543,33 @@ class Database(QObject):
             }
         return None
 
+    def get_all_logs(self):
+        """Get all logs with driver names and plate numbers"""
+        query = QSqlQuery()
+        query.prepare("""
+            SELECT 
+                l.rfid_tag,
+                COALESCE(d.first_name || ' ' || d.last_name, 'Unknown') as name,
+                COALESCE(v.plate_number, 'Unknown') as plate_no,
+                TO_CHAR(l.time_logged, 'HH12:MI AM') as time_logged,
+                l.remarks
+            FROM logs l
+            LEFT JOIN drivers d ON l.driver_id = d.driver_id
+            LEFT JOIN vehicles v ON d.driver_id = v.driver_id
+            ORDER BY l.time_logged DESC
+        """)
+        
+        logs = []
+        if query.exec():
+            while query.next():
+                logs.append({
+                    'rfid_tag': query.value(0),
+                    'name': query.value(1),
+                    'plate_no': query.value(2),
+                    'time_logged': query.value(3),
+                    'remarks': query.value(4)
+                })
+        return logs
+
     def close(self):
         self.db.close()

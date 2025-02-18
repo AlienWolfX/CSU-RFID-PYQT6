@@ -12,7 +12,7 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_AdminMainWindow(object):
     def setupUi(self, AdminMainWindow):
         AdminMainWindow.setObjectName("AdminMainWindow")
-        AdminMainWindow.resize(1481, 587)
+        AdminMainWindow.resize(1481, 586)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("ui\\../images/csuLogo.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
         AdminMainWindow.setWindowIcon(icon)
@@ -216,7 +216,7 @@ class Ui_AdminMainWindow(object):
         self.frame.setFrameShadow(QtWidgets.QFrame.Shadow.Raised)
         self.frame.setObjectName("frame")
         self.searchValue = QtWidgets.QLineEdit(parent=self.frame)
-        self.searchValue.setGeometry(QtCore.QRect(12, 10, 311, 31))
+        self.searchValue.setGeometry(QtCore.QRect(12, 10, 291, 31))
         self.searchValue.setObjectName("searchValue")
         self.detailsTable = QtWidgets.QTableWidget(parent=self.frame)
         self.detailsTable.setGeometry(QtCore.QRect(10, 50, 391, 211))
@@ -230,8 +230,8 @@ class Ui_AdminMainWindow(object):
         self.detailsTable.setHorizontalHeaderItem(1, item)
         item = QtWidgets.QTableWidgetItem()
         self.detailsTable.setHorizontalHeaderItem(2, item)
-        self.searchButton = QtWidgets.QPushButton(parent=self.centralwidget)
-        self.searchButton.setGeometry(QtCore.QRect(900, 490, 101, 28))
+        self.searchButton = QtWidgets.QPushButton(parent=self.frame)
+        self.searchButton.setGeometry(QtCore.QRect(300, 10, 101, 31))
         font = QtGui.QFont()
         font.setPointSize(10)
         font.setBold(True)
@@ -264,9 +264,10 @@ class Ui_AdminMainWindow(object):
         self.action_txt.setObjectName("action_txt")
         self.actionExit = QtGui.QAction(parent=AdminMainWindow)
         self.actionExit.setObjectName("actionExit")
+        self.action_txt_2 = QtGui.QAction(parent=AdminMainWindow)
+        self.action_txt_2.setObjectName("action_txt_2")
         self.menuExport_to.addAction(self.actionCSV)
-        self.menuExport_to.addAction(self.action_xlsx)
-        self.menuExport_to.addAction(self.action_txt)
+        self.menuExport_to.addAction(self.action_txt_2)
         self.menuFile.addAction(self.menuExport_to.menuAction())
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionExit)
@@ -318,6 +319,7 @@ class Ui_AdminMainWindow(object):
         self.action_xlsx.setText(_translate("AdminMainWindow", ".xlsx"))
         self.action_txt.setText(_translate("AdminMainWindow", ".txt"))
         self.actionExit.setText(_translate("AdminMainWindow", "Exit"))
+        self.action_txt_2.setText(_translate("AdminMainWindow", ".txt"))
 
 
 if __name__ == "__main__":

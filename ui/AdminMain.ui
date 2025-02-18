@@ -750,6 +750,7 @@
       <string>Export to</string>
      </property>
      <addaction name="actionCSV"/>
+     <addaction name="action_txt_2"/>
     </widget>
     <addaction name="menuExport_to"/>
     <addaction name="separator"/>
@@ -782,6 +783,11 @@
   <action name="actionExit">
    <property name="text">
     <string>Exit</string>
+   </property>
+  </action>
+  <action name="action_txt_2">
+   <property name="text">
+    <string>.txt</string>
    </property>
   </action>
  </widget>
