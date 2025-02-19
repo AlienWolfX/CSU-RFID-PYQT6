@@ -1,72 +1,118 @@
 import sys
+import os
+import csv
 import serial
 import time
-from PyQt6.QtWidgets import QApplication, QDialog, QMainWindow, QTableWidgetItem, QMessageBox, QFileDialog, QHeaderView
-from PyQt6.QtCore import Qt, QThread, pyqtSignal, QDate
+import shutil
+from datetime import datetime, timedelta
+from typing import Optional
+from collections import deque
+import queue
+import threading
+
+from PyQt6.QtWidgets import (
+    QApplication, 
+    QDialog, 
+    QMainWindow, 
+    QTableWidgetItem, 
+    QMessageBox, 
+    QFileDialog, 
+    QHeaderView
+)
+from PyQt6.QtCore import Qt, QThread, pyqtSignal, QDate, QTimer
 from PyQt6.QtGui import QPixmap
+
 from forms.LoginForm import Ui_LoginDialog
 from forms.Main import Ui_MainWindow
 from forms.AdminMain import Ui_AdminMainWindow
-from datetime import datetime, timedelta 
 from database import Database
 
-READ_TIMEOUT = 2
+# Constants
+READ_TIMEOUT = 30
 
 class RFIDReader(QThread):
     rfid_tag_signal = pyqtSignal(str)
-
+    
     def __init__(self, port='COM7', baud_rate=9600):
         super().__init__()
         self.port = port
         self.baud_rate = baud_rate
         self.ser = None
         self.running = True
+        self.last_read_time = {}  # Store last read time for each tag
+        self.READ_TIMEOUT = 30  # 30 second timeout
+        self.read_buffer = queue.Queue()  # Buffer for RFID reads
+        self.tag_cache = {}  # Cache for recently read tags
 
     def run(self):
         try:
             self.ser = serial.Serial(self.port, self.baud_rate, timeout=1)
             print(f"Listening on {self.port} at {self.baud_rate} baud rate...")
+            
+            # Start reading thread
+            read_thread = threading.Thread(target=self._read_serial)
+            read_thread.daemon = True
+            read_thread.start()
+            
+            # Process readings
+            while self.running:
+                try:
+                    rfid_tag = self.read_buffer.get(timeout=1)
+                    if rfid_tag:
+                        current_time = time.time()
+                        if self._should_process_tag(rfid_tag, current_time):
+                            self.last_read_time[rfid_tag] = current_time
+                            self.rfid_tag_signal.emit(rfid_tag)
+                except queue.Empty:
+                    continue
+                    
         except serial.SerialException as e:
             print(f"Error opening serial port {self.port}: {e}")
-            return
+        finally:
+            if self.ser and self.ser.is_open:
+                self.ser.close()
 
+    def _read_serial(self):
+        """Background thread to read from serial port"""
         while self.running:
             try:
-                rfid_tag = self.read_rfid_tag()
+                rfid_tag = self._read_rfid_tag()
                 if rfid_tag:
-                    self.rfid_tag_signal.emit(rfid_tag)
+                    self.read_buffer.put(rfid_tag)
             except Exception as e:
                 print(f"Error reading RFID tag: {e}")
-                time.sleep(1) 
+                time.sleep(0.1)
 
-        if self.ser and self.ser.is_open:
-            self.ser.close()
+    def _should_process_tag(self, tag: str, current_time: float) -> bool:
+        """Check if tag should be processed based on timeout"""
+        if tag in self.last_read_time:
+            time_diff = current_time - self.last_read_time[tag]
+            return time_diff >= self.READ_TIMEOUT
+        return True
 
-    def read_rfid_tag(self):
-        """Reads an RFID tag and returns a hexadecimal string."""
-        BUFFER_SIZE = 3  # Get 3 bytes from 6 hex characters
-        start_time = time.time()
-        byte_data = bytearray(BUFFER_SIZE) 
+    def _read_rfid_tag(self) -> Optional[str]:
+        """Optimized RFID tag reading"""
+        BUFFER_SIZE = 3
+        byte_data = bytearray(BUFFER_SIZE)
         bytes_read = 0
-
-        while time.time() - start_time < READ_TIMEOUT:
-            if self.ser.in_waiting >= BUFFER_SIZE - bytes_read:
-                try:
-                    # Read remaining bytes needed
-                    chunk = self.ser.read(BUFFER_SIZE - bytes_read)
-                    byte_data[bytes_read:bytes_read + len(chunk)] = chunk
-                    bytes_read += len(chunk)
-                    
-                    if bytes_read >= BUFFER_SIZE:
-                        # Use faster hex conversion
-                        return bytes(byte_data).hex().upper()
-                except serial.SerialException:
-                    return None
-
-        return None if bytes_read < BUFFER_SIZE else None
+        
+        try:
+            if self.ser.in_waiting >= BUFFER_SIZE:
+                chunk = self.ser.read(BUFFER_SIZE)
+                if len(chunk) == BUFFER_SIZE:
+                    # Cache tag lookup
+                    tag = bytes(chunk).hex().upper()
+                    return tag
+        except serial.SerialException:
+            pass
+            
+        return None
 
     def stop(self):
+        """Clean shutdown"""
         self.running = False
+        if self.ser and self.ser.is_open:
+            self.ser.close()
         self.wait()
 
 class LoginDialog(QDialog, Ui_LoginDialog):
@@ -107,7 +153,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.tableLogs.setSortingEnabled(True)
         self.tableLogs.sortItems(3, Qt.SortOrder.DescendingOrder)
         self.last_log_times = {}
-        self.LOG_TIMEOUT = 120  # 2 minutes
+        self.LOG_TIMEOUT = 30  # Changed to 30 seconds
 
         # Setup table columns
         self.tableLogs.setColumnCount(5)
@@ -115,12 +161,22 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             "RFID", "Name", "Plate No.", "Time", "Remarks"
         ])
         header = self.tableLogs.horizontalHeader()
-        header.setSectionResizeMode(0, QHeaderView.ResizeMode.ResizeToContents)
+        header.setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
         header.setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
-        header.setSectionResizeMode(2, QHeaderView.ResizeMode.ResizeToContents)
-        header.setSectionResizeMode(3, QHeaderView.ResizeMode.ResizeToContents)
-        header.setSectionResizeMode(4, QHeaderView.ResizeMode.ResizeToContents)
+        header.setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
+        header.setSectionResizeMode(3, QHeaderView.ResizeMode.Stretch)
+        header.setSectionResizeMode(4, QHeaderView.ResizeMode.Stretch)
 
+        # Add caches
+        self.driver_cache = {}  # Cache for driver lookups
+        self.log_cache = deque(maxlen=100)  # Cache recent logs
+        
+        # Batch update timer
+        self.update_timer = QTimer()
+        self.update_timer.timeout.connect(self.process_updates)
+        self.update_timer.start(100)  # Update every 100ms
+        
+        self.pending_updates = queue.Queue()
 
     def logout(self):
         """Handle logout button click"""
@@ -130,26 +186,36 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def add_table_entry(self, rfid, name, plate):
         current_time = datetime.now()
         
-        # Get last log for this RFID
-        last_log = self.db.get_last_log(rfid)
-        remarks = "Time In"
-        
-        if last_log:
-            last_time = datetime.strptime(last_log['time_logged'], "%I:%M %p")
-            time_diff = (current_time - last_time.replace(year=current_time.year, 
-                                                        month=current_time.month, 
-                                                        day=current_time.day)).total_seconds()
-            
+        # Check if this RFID has been logged recently
+        if rfid in self.last_log_times:
+            time_diff = (current_time - self.last_log_times[rfid]).total_seconds()
             if time_diff < self.LOG_TIMEOUT:
-                return
-            else:
-                remarks = "Time Out" if last_log['remarks'] == "Time In" else "Time In"
+                return 
         
+        last_log = self.db.get_last_log(rfid)
+        
+        if not last_log:
+            remarks = "Time In"
+        else:
+            last_time = datetime.strptime(last_log['time_logged'], "%I:%M %p")
+            time_since_last = (current_time - last_time).total_seconds()
+            
+            if time_since_last >= self.LOG_TIMEOUT:
+                if last_log['remarks'] == "Time In":
+                    remarks = "Time Out"
+                else:
+                    remarks = "Time In"
+            else:
+                return
+        
+        # Update last log time
         self.last_log_times[rfid] = current_time
         time_str = current_time.strftime("%I:%M %p")
         
+        # Log the entry to database
         self.db.log_entry(rfid, remarks)
         
+        # Add entry to table
         row = self.tableLogs.rowCount()
         self.tableLogs.insertRow(row)
         
@@ -162,14 +228,34 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.tableLogs.sortItems(3, Qt.SortOrder.DescendingOrder)
 
     def update_rfid_value(self, code):
-        driver = self.db.get_driver_by_code(code)
+        """Queue updates instead of processing immediately"""
+        self.pending_updates.put(code)
+
+    def process_updates(self):
+        """Process queued updates in batch"""
+        try:
+            while True:
+                code = self.pending_updates.get_nowait()
+                self._process_single_update(code)
+        except queue.Empty:
+            pass
+
+    def _process_single_update(self, code):
+        """Process a single RFID update"""
+        # Check cache first
+        if code in self.driver_cache:
+            driver = self.driver_cache[code]
+        else:
+            driver = self.db.get_driver_by_code(code)
+            self.driver_cache[code] = driver
+
         if driver:
             name_str = f"{driver['first_name']} {driver['last_name']}"
             self.userPhoto.setPixmap(QPixmap(driver['driver_photo']))
             plate_no = self.db.get_plate_by_driver_code(driver["driver_code"]) or "Unknown"
         else:
             name_str = "Unknown"
-            plate_no = "Unknown"
+            plate_no = "Unknown" 
             self.userPhoto.setPixmap(QPixmap("media/unknown.jpg"))
 
         self.rfidValue.setText(code)
@@ -255,7 +341,7 @@ class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
                     for log in logs:
                         # Parse time and add UTC+8
                         time_logged = datetime.strptime(log['time_logged'], "%I:%M %p")
-                        ph_time = time_logged + timedelta(hours=8)  # Add 8 hours for UTC+8
+                        ph_time = time_logged + timedelta(hours=8) 
                         time_str = ph_time.strftime("%I:%M %p")
                         
                         writer.writerow([
