@@ -184,6 +184,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.close()
 
     def add_table_entry(self, rfid, name, plate):
+        """Add new entry to the logs table with proper remarks handling"""
         current_time = datetime.now()
         
         # Check if this RFID has been logged recently
@@ -192,39 +193,37 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             if time_diff < self.LOG_TIMEOUT:
                 return 
         
+        # Get the last log for this RFID
         last_log = self.db.get_last_log(rfid)
+        remarks = "Time In"  # Default for new entries
         
-        if not last_log:
-            remarks = "Time In"
-        else:
+        if last_log:
             last_time = datetime.strptime(last_log['time_logged'], "%I:%M %p")
             time_since_last = (current_time - last_time).total_seconds()
             
             if time_since_last >= self.LOG_TIMEOUT:
-                if last_log['remarks'] == "Time In":
-                    remarks = "Time Out"
-                else:
-                    remarks = "Time In"
+                remarks = "Time Out" if last_log['remarks'] == "Time In" else "Time In"
             else:
-                return
+                return  # Skip if too soon since last log
         
         # Update last log time
         self.last_log_times[rfid] = current_time
         time_str = current_time.strftime("%I:%M %p")
         
-        # Log the entry to database
+        # Log the entry to database before adding to table
         self.db.log_entry(rfid, remarks)
         
-        # Add entry to table
-        row = self.tableLogs.rowCount()
-        self.tableLogs.insertRow(row)
+        # Insert new row at the beginning of the table
+        self.tableLogs.insertRow(0)
         
-        self.tableLogs.setItem(row, 0, QTableWidgetItem(rfid))
-        self.tableLogs.setItem(row, 1, QTableWidgetItem(name))
-        self.tableLogs.setItem(row, 2, QTableWidgetItem(plate))
-        self.tableLogs.setItem(row, 3, QTableWidgetItem(time_str))
-        self.tableLogs.setItem(row, 4, QTableWidgetItem(remarks))
+        # Add items to the new row
+        self.tableLogs.setItem(0, 0, QTableWidgetItem(rfid))
+        self.tableLogs.setItem(0, 1, QTableWidgetItem(name))
+        self.tableLogs.setItem(0, 2, QTableWidgetItem(plate))
+        self.tableLogs.setItem(0, 3, QTableWidgetItem(time_str))
+        self.tableLogs.setItem(0, 4, QTableWidgetItem(remarks))
         
+        # Resort table to maintain order
         self.tableLogs.sortItems(3, Qt.SortOrder.DescendingOrder)
 
     def update_rfid_value(self, code):
@@ -242,7 +241,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def _process_single_update(self, code):
         """Process a single RFID update"""
-        # Check cache first
         if code in self.driver_cache:
             driver = self.driver_cache[code]
         else:
