@@ -282,7 +282,8 @@ class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
         self.submitButton.clicked.connect(self.register_driver)
         self.updateButton.clicked.connect(self.update_driver)  
         self.deleteButton.clicked.connect(self.delete_driver)
-        self.searchButton.clicked.connect(self.search_drivers)  
+        self.searchButton.clicked.connect(self.search_drivers) 
+        self.clearButton.clicked.connect(self.clear_form)
 
         # Set default photo and initialize photo path
         self.userPhoto.setPixmap(QPixmap("media/unknown.jpg"))
@@ -314,6 +315,27 @@ class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
         header.setSectionResizeMode(0, QHeaderView.ResizeMode.ResizeToContents)
         header.setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
         header.setSectionResizeMode(2, QHeaderView.ResizeMode.ResizeToContents)
+    
+    def clear_form(self):
+        # Clear driver fields
+        self.driver_codeValue.clear()
+        self.dfirst_nameValue.clear()
+        self.dlast_nameValue.clear()
+        self.driverTypeComboBox.setCurrentIndex(0)  # Reset to first item
+        self.license_noValue.clear()
+        self.crExpiry.setDate(QDate.currentDate())
+        self.orExpiry.setDate(QDate.currentDate())
+        self.userPhoto.setPixmap(QPixmap("media/unknown.jpg"))
+        self.driver_photo_path = "media/unknown.jpg"
+        
+        # Clear vehicle fields
+        self.plate_idValue.clear()
+        self.plate_noValue.clear()
+        self.modelValue.clear()
+        
+        # Clear proprietor fields
+        self.pfirst_nameValue.clear()
+        self.plast_nameValue.clear()
     
     def export_to_csv(self):
         """Export logs to CSV file"""

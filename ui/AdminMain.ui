@@ -543,7 +543,7 @@
       <rect>
        <x>30</x>
        <y>70</y>
-       <width>331</width>
+       <width>151</width>
        <height>28</height>
       </rect>
      </property>
@@ -649,6 +649,33 @@
        <normaloff>../images/logoutIcon.png</normaloff>../images/logoutIcon.png</iconset>
      </property>
     </widget>
+    <widget class="QPushButton" name="clearButton">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>70</y>
+       <width>151</width>
+       <height>28</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="text">
+      <string>Clear</string>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>../images/clear.svg</normaloff>../images/clear.svg</iconset>
+     </property>
+    </widget>
    </widget>
    <widget class="QFrame" name="frame">
     <property name="geometry">
@@ -738,7 +765,7 @@
      <x>0</x>
      <y>0</y>
      <width>1481</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
