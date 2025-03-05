@@ -745,6 +745,16 @@ class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
         # Update table with search results
         self.detailsTable.setRowCount(0)  # Clear existing rows
         
+        if not drivers:
+            # Show message if no drivers found
+            QMessageBox.information(
+                self,
+                "Search Results",
+                "No drivers found matching your search."
+            )
+            return
+        
+        # Display found drivers
         for driver in drivers:
             row = self.detailsTable.rowCount()
             self.detailsTable.insertRow(row)
