@@ -351,24 +351,17 @@ class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
                 logs = self.db.get_all_logs()
                 
                 # Write to CSV
-                import csv
-                from datetime import datetime, timedelta
-                
                 with open(file_name, 'w', newline='') as file:
                     writer = csv.writer(file)
-                    writer.writerow(['RFID', 'Name', 'Plate No.', 'Time', 'Remarks'])
+                    writer.writerow(['RFID', 'Name', 'Plate No.', 'Date', 'Time', 'Remarks'])
                     
                     for log in logs:
-                        # Parse time and add UTC+8
-                        time_logged = datetime.strptime(log['time_logged'], "%I:%M %p")
-                        ph_time = time_logged + timedelta(hours=8) 
-                        time_str = ph_time.strftime("%I:%M %p")
-                        
                         writer.writerow([
                             log['rfid_tag'],
                             log['name'],
                             log['plate_no'],
-                            time_str,
+                            log['log_date'], 
+                            log['time_logged'],
                             log['remarks']
                         ])
                 
@@ -400,21 +393,18 @@ class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
                 
                 with open(file_name, 'w') as file:
                     file.write("CSU VeMon Logs\n")
-                    file.write("=" * 50 + "\n\n")
+                    file.write("=" * 100 + "\n\n")
                     
-                    file.write(f"{'RFID':<15} {'Name':<30} {'Plate No.':<15} {'Time':<12} {'Remarks':<10}\n")
-                    file.write("-" * 82 + "\n")
+                    file.write(f"{'RFID':<15} {'Name':<30} {'Plate No.':<15} {'Date':<12} {'Time':<12} {'Remarks':<10}\n")
+                    file.write("-" * 100 + "\n")
                     
                     for log in logs:
-                        time_logged = datetime.strptime(log['time_logged'], "%I:%M %p")
-                        ph_time = time_logged + timedelta(hours=8)
-                        time_str = ph_time.strftime("%I:%M %p")
-                        
                         file.write(
                             f"{log['rfid_tag']:<15} "
                             f"{log['name'][:30]:<30} "
                             f"{log['plate_no']:<15} "
-                            f"{time_str:<12} "
+                            f"{log['log_date']:<12} "
+                            f"{log['time_logged']:<12} "
                             f"{log['remarks']:<10}\n"
                         )
                 

@@ -551,6 +551,7 @@ class Database(QObject):
                 l.rfid_tag,
                 COALESCE(d.first_name || ' ' || d.last_name, 'Unknown') as name,
                 COALESCE(v.plate_number, 'Unknown') as plate_no,
+                TO_CHAR(l.time_logged, 'YYYY-MM-DD') as log_date,
                 TO_CHAR(l.time_logged, 'HH12:MI AM') as time_logged,
                 l.remarks
             FROM logs l
@@ -566,8 +567,9 @@ class Database(QObject):
                     'rfid_tag': query.value(0),
                     'name': query.value(1),
                     'plate_no': query.value(2),
-                    'time_logged': query.value(3),
-                    'remarks': query.value(4)
+                    'log_date': query.value(3),
+                    'time_logged': query.value(4),
+                    'remarks': query.value(5)
                 })
         return logs
 

@@ -1,0 +1,48 @@
+CSU VeMon Logs
+====================================================================================================
+
+RFID            Name                           Plate No.       Date         Time         Remarks   
+----------------------------------------------------------------------------------------------------
+4819E9          Bogart Dela Cruz               qg              2025-02-19   05:22 AM     Time In   
+4819E9          Bogart Dela Cruz               qg              2025-02-19   05:21 AM     Time Out  
+4819E1          John Doe                       321-CBA         2025-02-19   05:21 AM     Time In   
+4819E1          John Doe                       321-CBA         2025-02-19   05:20 AM     Time Out  
+481961          Unknown                        Unknown         2025-02-19   05:20 AM     Time Out  
+481929          Unknown                        Unknown         2025-02-19   05:20 AM     Time In   
+C873FB          Unknown                        Unknown         2025-02-19   05:20 AM     Time Out  
+4819E9          Bogart Dela Cruz               qg              2025-02-19   05:20 AM     Time In   
+C873FA          Unknown                        Unknown         2025-02-19   05:20 AM     Time In   
+481921          Unknown                        Unknown         2025-02-19   05:20 AM     Time Out  
+4819E1          John Doe                       321-CBA         2025-02-19   05:19 AM     Time In   
+4819E9          Bogart Dela Cruz               qg              2025-02-19   05:19 AM     Time Out  
+481929          Unknown                        Unknown         2025-02-19   05:19 AM     Time Out  
+C873FB          Unknown                        Unknown         2025-02-19   05:19 AM     Time In   
+C873FA          Unknown                        Unknown         2025-02-19   05:19 AM     Time Out  
+4819E9          Bogart Dela Cruz               qg              2025-02-19   05:19 AM     Time In   
+4819E1          John Doe                       321-CBA         2025-02-19   05:18 AM     Time In   
+C873FB          Unknown                        Unknown         2025-02-19   05:18 AM     Time Out  
+4819E9          Bogart Dela Cruz               qg              2025-02-19   05:18 AM     Time Out  
+4819E1          John Doe                       321-CBA         2025-02-19   05:18 AM     Time Out  
+4819E1          John Doe                       321-CBA         2025-02-19   05:17 AM     Time Out  
+4819E9          Bogart Dela Cruz               qg              2025-02-19   05:17 AM     Time Out  
+4819E9          Bogart Dela Cruz               qg              2025-02-19   05:17 AM     Time In   
+4819E1          John Doe                       321-CBA         2025-02-19   05:17 AM     Time In   
+481961          Unknown                        Unknown         2025-02-19   05:16 AM     Time In   
+481921          Unknown                        Unknown         2025-02-19   05:16 AM     Time In   
+481929          Unknown                        Unknown         2025-02-19   05:16 AM     Time In   
+C873FB          Unknown                        Unknown         2025-02-19   05:16 AM     Time In   
+C873FA          Unknown                        Unknown         2025-02-19   05:16 AM     Time In   
+4819E1          John Doe                       321-CBA         2025-02-19   05:16 AM     Time Out  
+4819E9          Bogart Dela Cruz               qg              2025-02-19   05:16 AM     Time Out  
+4819E9          Bogart Dela Cruz               qg              2025-02-19   05:15 AM     Time Out  
+4819E1          John Doe                       321-CBA         2025-02-19   05:15 AM     Time Out  
+4819E9          Bogart Dela Cruz               qg              2025-02-19   05:15 AM     Time In   
+4819E1          John Doe                       321-CBA         2025-02-19   05:15 AM     Time In   
+4819E1          John Doe                       321-CBA         2025-02-19   05:07 AM     Time Out  
+4819E9          Bogart Dela Cruz               qg              2025-02-19   05:07 AM     Time Out  
+4819E9          Bogart Dela Cruz               qg              2025-02-19   05:04 AM     Time In   
+4819E1          John Doe                       321-CBA         2025-02-19   05:04 AM     Time In   
+4819E9          Bogart Dela Cruz               qg              2025-02-19   05:01 AM     Time Out  
+4819E1          John Doe                       321-CBA         2025-02-19   05:01 AM     Time Out  
+4819E1          John Doe                       321-CBA         2025-02-19   05:00 AM     Time In   
+4819E9          Bogart Dela Cruz               qg              2025-02-19   05:00 AM     Time In   
