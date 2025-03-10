@@ -153,7 +153,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.tableLogs.setSortingEnabled(True)
         self.tableLogs.sortItems(3, Qt.SortOrder.DescendingOrder)
         self.last_log_times = {}
-        self.LOG_TIMEOUT = 30  
+        self.LOG_TIMEOUT = 30 # Grace period in seconds for every vehicle to be logged
 
         
         self.tableLogs.setColumnCount(5)
