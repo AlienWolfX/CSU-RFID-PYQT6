@@ -91,22 +91,34 @@ class RFIDReader(QThread):
         return True
 
     def _read_rfid_tag(self) -> Optional[str]:
-        """Optimized RFID tag reading"""
-        BUFFER_SIZE = 3
-        byte_data = bytearray(BUFFER_SIZE)
-        bytes_read = 0
-        
+        """Read RFID tag with specific pattern starting and ending with H"""
         try:
-            if self.ser.in_waiting >= BUFFER_SIZE:
-                chunk = self.ser.read(BUFFER_SIZE)
-                if len(chunk) == BUFFER_SIZE:
-                    
-                    tag = bytes(chunk).hex().upper()
-                    return tag
-        except serial.SerialException:
-            pass
+            buffer = bytearray()
             
-        return None
+            # Read available data
+            if self.ser.in_waiting > 0:
+                chunk = self.ser.read(self.ser.in_waiting)
+                buffer += chunk
+                
+                # Look for pattern starting with 'H' (0x48)
+                if buffer and 0x48 in buffer:
+                    # Find the first 'H'
+                    start_index = buffer.find(b'H')
+                    
+                    # Check if we have at least 3 bytes after finding 'H'
+                    if start_index >= 0 and len(buffer) >= start_index + 3:
+                        # Extract exactly 3 bytes (H and 2 bytes after it)
+                        tag_data = buffer[start_index:start_index+3]
+                        
+                        if len(tag_data) == 3:
+                            # Convert to hex
+                            tag = tag_data.hex().upper()
+                            return tag
+            
+            return None
+        except serial.SerialException:
+            print("Serial error in _read_rfid_tag")
+            return None
 
     def stop(self):
         """Clean shutdown"""
