@@ -9,10 +9,9 @@
   - [ ] Update UI to show filtered results
   - [ ] Add reset filter option
 
-- [ ] Improve driver deletion logic
+- [x] Improve driver deletion logic
   - [x] Change delete operation to set inactive flag
-  - [ ] Add restore/reactivate functionality
-  - [ ] Add visual indicator for inactive drivers
+  - [x] Add restore/reactivate functionality
   - [x] Add confirmation dialog before deactivating
 
 ## UI/UX Improvements

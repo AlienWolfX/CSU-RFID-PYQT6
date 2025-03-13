@@ -17,7 +17,10 @@ from PyQt6.QtWidgets import (
     QTableWidgetItem, 
     QMessageBox, 
     QFileDialog, 
-    QHeaderView
+    QHeaderView,
+    QLabel,
+    QVBoxLayout,
+    QWidget
 )
 from PyQt6.QtCore import Qt, QThread, pyqtSignal, QDate, QTimer
 from PyQt6.QtGui import QPixmap
@@ -280,22 +283,54 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.db.close()
         event.accept()
 
+class AboutDialog(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("About CSU VeMon")
+        self.setFixedSize(400, 300)
+        
+        layout = QVBoxLayout()
+        
+        # Add about information
+        about_text = """
+        <h2>CSU VeMon - Vehicle Monitoring System</h2>
+        <p>Author: AlienWolfX</p>
+        <p>GitHub: <a href="https://github.com/AlienWolfX">https://github.com/AlienWolfX</a></p>
+        <br>
+        """
+        
+        about_label = QLabel(about_text)
+        about_label.setOpenExternalLinks(True)
+        about_label.setWordWrap(True)
+        layout.addWidget(about_label)
+        
+        self.setLayout(layout)
+
 class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
         self.db = Database()
-        from datetime import timedelta  
+        from datetime import timedelta
         
+        # Track current view state
+        self.showing_inactive = False
         
-        self.buttonLogout.clicked.connect(self.logout)
+        # Connect toolbar actions
+        self.actionviewDriverStatus.triggered.connect(self.toggle_driver_view)
+        self.actionLogout.triggered.connect(self.logout)
+        self.actionClear.triggered.connect(self.clear_form)
+        
+        # ...existing initialization code...
         self.actionExit.triggered.connect(self.close)
         self.uploadButton.clicked.connect(self.upload_photo)
         self.submitButton.clicked.connect(self.register_driver)
-        self.updateButton.clicked.connect(self.update_driver)  
+        self.updateButton.clicked.connect(self.update_driver)
         self.deleteButton.clicked.connect(self.delete_driver)
-        self.searchButton.clicked.connect(self.search_drivers) 
-        self.clearButton.clicked.connect(self.clear_form)
+        self.searchButton.clicked.connect(self.search_drivers)
+        
+        # Remove this line since we're using the toolbar action instead
+        # self.clearButton.clicked.connect(self.clear_form)
 
         
         self.userPhoto.setPixmap(QPixmap("media/unknown.jpg"))
@@ -318,6 +353,28 @@ class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
 
         self.actionCSV.triggered.connect(self.export_to_csv)
         self.action_txt_2.triggered.connect(self.export_to_txt)
+
+        # Connect toolbar toggle and about actions
+        self.actionToolbar.triggered.connect(self.toggle_toolbar)
+        self.actionAbout.triggered.connect(self.show_about_dialog)
+        
+        # Store toolbar visibility state
+        self.toolbar_visible = True
+
+    def toggle_driver_view(self):
+        """Toggle between active and inactive drivers view"""
+        self.showing_inactive = not self.showing_inactive
+        
+        # Update button text and tooltip
+        if self.showing_inactive:
+            self.actionviewDriverStatus.setToolTip("View active drivers")
+            self.deleteButton.setText("Reactivate Driver")
+        else:
+            self.actionviewDriverStatus.setToolTip("View inactive drivers")
+            self.deleteButton.setText("Delete")
+        
+        # Reload appropriate driver list
+        self.load_drivers_table()
 
     def setup_details_table(self):
         """Configure the details table"""
@@ -429,9 +486,12 @@ class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
                 QMessageBox.critical(self, "Error", f"Failed to export logs: {str(e)}")
 
     def load_drivers_table(self):
-        """Load all drivers into the details table"""
-        self.detailsTable.setRowCount(0) 
-        drivers = self.db.get_all_drivers()
+        """Load drivers into the details table based on current view"""
+        self.detailsTable.setRowCount(0)
+        
+        # Get active or inactive drivers based on current view
+        drivers = (self.db.get_inactive_drivers() if self.showing_inactive 
+                  else self.db.get_all_drivers())
         
         for driver in drivers:
             row = self.detailsTable.rowCount()
@@ -687,44 +747,45 @@ class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
             )
 
     def delete_driver(self):
-        """Handle driver deletion"""
-        
+        """Handle driver deactivation/reactivation"""
         current_row = self.detailsTable.currentRow()
         if current_row < 0:
+            action = "reactivate" if self.showing_inactive else "deactivate"
             QMessageBox.warning(
                 self,
                 "Selection Error",
-                "Please select a driver to delete by clicking on a row in the table."
+                f"Please select a driver to {action} by clicking on a row in the table."
             )
             return
 
-        
         driver_code = self.detailsTable.item(current_row, 0).text()
+        action = "reactivate" if self.showing_inactive else "deactivate"
 
-        
         reply = QMessageBox.question(
             self,
-            'Confirm Deletion',
-            'Do you wish to delete this driver?',
+            f'Confirm {action.title()}',
+            f'Do you want to {action} this driver?',
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
             QMessageBox.StandardButton.No
         )
 
         if reply == QMessageBox.StandardButton.Yes:
+            success = (self.db.reactivate_driver(driver_code) if self.showing_inactive 
+                      else self.db.delete_driver(driver_code))
             
-            if self.db.delete_driver(driver_code):
+            if success:
                 QMessageBox.information(
                     self,
                     "Success",
-                    "Driver deleted successfully!"
+                    f"Driver {action}d successfully!"
                 )
-                self.load_drivers_table()  
-                self.clear_form()  
+                self.load_drivers_table()
+                self.clear_form()
             else:
                 QMessageBox.critical(
                     self,
                     "Error",
-                    "Failed to delete driver"
+                    f"Failed to {action} driver"
                 )
 
     def clear_form(self):
@@ -784,8 +845,27 @@ class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
             self.detailsTable.setItem(row, 2, QTableWidgetItem(driver['plate_number']))
 
     def logout(self):
-        """Handle logout button click"""
-        self.close()
+        """Handle logout action"""
+        reply = QMessageBox.question(
+            self,
+            'Confirm Logout',
+            'Are you sure you want to logout?',
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No
+        )
+        
+        if reply == QMessageBox.StandardButton.Yes:
+            self.close()
+
+    def toggle_toolbar(self):
+        """Toggle toolbar visibility"""
+        self.toolbar_visible = not self.toolbar_visible
+        self.toolBar.setVisible(self.toolbar_visible)
+
+    def show_about_dialog(self):
+        """Show about dialog"""
+        dialog = AboutDialog(self)
+        dialog.exec()
 
 def main():
     app = QApplication(sys.argv)

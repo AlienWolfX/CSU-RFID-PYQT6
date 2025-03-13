@@ -552,5 +552,45 @@ class Database(QObject):
                 })
         return logs
 
+    def get_inactive_drivers(self):
+        """Fetch all inactive drivers"""
+        query = QSqlQuery()
+        query.prepare("""
+            SELECT 
+                d.driver_code,
+                d.first_name || ' ' || d.last_name as full_name,
+                v.plate_number
+            FROM drivers d
+            LEFT JOIN vehicles v ON v.driver_id = d.driver_id
+            WHERE d.is_active = FALSE
+            ORDER BY d.first_name, d.last_name
+        """)
+        
+        drivers = []
+        if query.exec():
+            while query.next():
+                drivers.append({
+                    'driver_code': query.value(0),
+                    'full_name': query.value(1),
+                    'plate_number': query.value(2) or "No vehicle"
+                })
+        return drivers
+
+    def reactivate_driver(self, driver_code):
+        """Reactivate a deactivated driver"""
+        query = QSqlQuery()
+        query.prepare("""
+            UPDATE drivers 
+            SET is_active = TRUE 
+            WHERE driver_code = $1
+            RETURNING driver_id
+        """)
+        query.addBindValue(driver_code)
+        
+        success = query.exec()
+        if not success:
+            print(f"Reactivation error: {query.lastError().text()}")
+        return success
+
     def close(self):
         self.db.close()
