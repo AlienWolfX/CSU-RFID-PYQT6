@@ -314,29 +314,20 @@
      <x>0</x>
      <y>0</y>
      <width>1037</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
      <string>File</string>
     </property>
-    <widget class="QMenu" name="menuExport_to">
-     <property name="title">
-      <string>Export to</string>
-     </property>
-     <addaction name="actionCSV"/>
-     <addaction name="action_xlsx"/>
-     <addaction name="action_txt"/>
-    </widget>
-    <addaction name="menuExport_to"/>
-    <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuAbout">
     <property name="title">
-     <string>About</string>
+     <string>Help</string>
     </property>
+    <addaction name="actionAbout"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuAbout"/>
@@ -358,8 +349,21 @@
    </property>
   </action>
   <action name="actionExit">
+   <property name="icon">
+    <iconset>
+     <normaloff>../../../../../Downloads/Compressed/fugue-icons-3.5.6-src/icons/door-open-out.png</normaloff>../../../../../Downloads/Compressed/fugue-icons-3.5.6-src/icons/door-open-out.png</iconset>
+   </property>
    <property name="text">
     <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="icon">
+    <iconset>
+     <normaloff>../../../../../Downloads/Compressed/fugue-icons-3.5.6-src/icons/question-button.png</normaloff>../../../../../Downloads/Compressed/fugue-icons-3.5.6-src/icons/question-button.png</iconset>
+   </property>
+   <property name="text">
+    <string>About</string>
    </property>
   </action>
  </widget>

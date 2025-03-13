@@ -193,6 +193,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         
         self.pending_updates = queue.Queue()
 
+        # Connect menu actions
+        self.actionExit.triggered.connect(self.close)
+        self.actionAbout.triggered.connect(self.show_about_dialog)
+
     def logout(self):
         """Handle logout button click"""
         self.rfidReader.stop()
@@ -278,10 +282,26 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.add_table_entry(code, name_str, plate_no)
 
     def closeEvent(self, event):
-        """Handles the window close event to stop the RFID reader thread."""
-        self.rfidReader.stop()
-        self.db.close()
-        event.accept()
+        """Handles the window close event"""
+        reply = QMessageBox.question(
+            self,
+            'Confirm Exit',
+            'Are you sure you want to exit?',
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No
+        )
+        
+        if reply == QMessageBox.StandardButton.Yes:
+            self.rfidReader.stop()
+            self.db.close()
+            event.accept()
+        else:
+            event.ignore()
+
+    def show_about_dialog(self):
+        """Show about dialog"""
+        dialog = AboutDialog(self)
+        dialog.exec()
 
 class AboutDialog(QDialog):
     def __init__(self, parent=None):
