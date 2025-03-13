@@ -252,7 +252,7 @@ class Database(QObject):
         return None
 
     def get_all_drivers(self):
-        """Fetch all drivers with their vehicle information"""
+        """Fetch all active drivers with their vehicle information"""
         query = QSqlQuery()
         query.prepare("""
             SELECT 
@@ -261,6 +261,7 @@ class Database(QObject):
                 v.plate_number
             FROM drivers d
             LEFT JOIN vehicles v ON v.driver_id = d.driver_id
+            WHERE d.is_active = TRUE
             ORDER BY d.first_name, d.last_name
         """)
         
@@ -452,45 +453,23 @@ class Database(QObject):
         return None
 
     def delete_driver(self, driver_code):
-        """Delete driver and related records"""
-        self.db.transaction()
-        try:
-            # First get the driver_id
-            driver_id_query = QSqlQuery()
-            driver_id_query.prepare("SELECT driver_id FROM drivers WHERE driver_code = $1")
-            driver_id_query.addBindValue(driver_code)
-            
-            if not driver_id_query.exec() or not driver_id_query.next():
-                raise Exception("Driver not found")
-                
-            driver_id = driver_id_query.value(0)
-
-            # Delete vehicle records first (due to foreign key constraints)
-            vehicle_query = QSqlQuery()
-            vehicle_query.prepare("DELETE FROM vehicles WHERE driver_id = $1")
-            vehicle_query.addBindValue(driver_id)
-            
-            if not vehicle_query.exec():
-                raise Exception("Failed to delete vehicle records")
-
-            # Finally delete the driver
-            driver_query = QSqlQuery()
-            driver_query.prepare("DELETE FROM drivers WHERE driver_code = $1")
-            driver_query.addBindValue(driver_code)
-            
-            if not driver_query.exec():
-                raise Exception("Failed to delete driver")
-
-            self.db.commit()
-            return True
-
-        except Exception as e:
-            self.db.rollback()
-            print(f"Error deleting driver: {str(e)}")
-            return False
+        """Soft delete driver by setting is_active to FALSE"""
+        query = QSqlQuery()
+        query.prepare("""
+            UPDATE drivers 
+            SET is_active = FALSE 
+            WHERE driver_code = $1
+            RETURNING driver_id
+        """)
+        query.addBindValue(driver_code)
+        
+        success = query.exec()
+        if not success:
+            print(f"Soft delete error: {query.lastError().text()}")
+        return success
 
     def search_drivers(self, search_text):
-        """Search drivers by name (first + last), RFID code, or plate number"""
+        """Search active drivers by name, RFID code, or plate number"""
         query = QSqlQuery()
         query.prepare("""
             SELECT DISTINCT
@@ -500,13 +479,13 @@ class Database(QObject):
             FROM drivers d
             LEFT JOIN vehicles v ON v.driver_id = d.driver_id
             WHERE 
-                d.driver_code ILIKE $1 OR
+                d.is_active = TRUE AND
+                (d.driver_code ILIKE $1 OR
                 LOWER(d.first_name || ' ' || d.last_name) LIKE LOWER($1) OR
-                v.plate_number ILIKE $1
+                v.plate_number ILIKE $1)
             ORDER BY full_name
         """)
         
-        # Add wildcards for partial matching
         search_pattern = f"%{search_text}%"
         query.addBindValue(search_pattern)
         
