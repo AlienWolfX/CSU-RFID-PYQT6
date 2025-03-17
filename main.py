@@ -20,7 +20,10 @@ from PyQt6.QtWidgets import (
     QHeaderView,
     QLabel,
     QVBoxLayout,
-    QWidget
+    QWidget,
+    QCalendarWidget,
+    QHBoxLayout,
+    QPushButton
 )
 from PyQt6.QtCore import Qt, QThread, pyqtSignal, QDate, QTimer
 from PyQt6.QtGui import QPixmap
@@ -303,6 +306,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         dialog = AboutDialog(self)
         dialog.exec()
 
+    def toggle_toolbar(self):
+        """Toggle toolbar visibility with dynamic text"""
+        self.toolbar_visible = not self.toolbar_visible
+        self.toolBar.setVisible(self.toolbar_visible)
+        
+        # Update action text based on current state
+        if self.toolbar_visible:
+            self.actionToolbar.setText("Hide Toolbar")
+            self.actionToolbar.setToolTip("Hide the toolbar")
+        else:
+            self.actionToolbar.setText("Show Toolbar") 
+            self.actionToolbar.setToolTip("Show the toolbar")
+
 class AboutDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -427,7 +443,14 @@ class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
         self.plast_nameValue.clear()
     
     def export_to_csv(self):
-        """Export logs to CSV file with Philippines timezone"""
+        """Export logs to CSV file with Philippines timezone and date filtering"""
+        # Show date filter dialog
+        date_dialog = DateFilterDialog(self)
+        if date_dialog.exec() != QDialog.DialogCode.Accepted:
+            return
+            
+        start_date, end_date = date_dialog.get_date_range()
+        
         file_name, _ = QFileDialog.getSaveFileName(
             self,
             "Export Logs to CSV",
@@ -439,35 +462,46 @@ class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
             try:
                 logs = self.db.get_all_logs()
                 
-                
                 with open(file_name, 'w', newline='') as file:
                     writer = csv.writer(file)
                     writer.writerow(['RFID', 'Name', 'Plate No.', 'Date', 'Time', 'Remarks'])
                     
                     for log in logs:
-                        
-                        dt = datetime.strptime(f"{log['log_date']} {log['time_logged']}", "%Y-%m-%d %I:%M %p")
+                        dt = datetime.strptime(f"{log['log_date']} {log['time_logged']}", 
+                                             "%Y-%m-%d %I:%M %p")
                         pht = dt + timedelta(hours=8)
                         
-                        
-                        rfid = f'="{log["rfid_tag"]}"'
-                        
-                        writer.writerow([
-                            rfid,  
-                            log['name'],
-                            log['plate_no'],
-                            pht.strftime("%Y-%m-%d"),
-                            pht.strftime("%I:%M %p"),
-                            log['remarks']
-                        ])
+                        # Filter by date range
+                        if start_date <= pht.date() <= end_date:
+                            rfid = f'="{log["rfid_tag"]}"'
+                            writer.writerow([
+                                rfid,
+                                log['name'],
+                                log['plate_no'],
+                                pht.strftime("%Y-%m-%d"),
+                                pht.strftime("%I:%M %p"),
+                                log['remarks']
+                            ])
                 
-                QMessageBox.information(self, "Success", f"Logs exported successfully to {file_name}")
+                QMessageBox.information(
+                    self, 
+                    "Success", 
+                    f"Filtered logs exported successfully to {file_name}\n"
+                    f"Date range: {start_date} to {end_date}"
+                )
                 
             except Exception as e:
                 QMessageBox.critical(self, "Error", f"Failed to export logs: {str(e)}")
 
     def export_to_txt(self):
-        """Export logs to text file with Philippines timezone"""
+        """Export logs to text file with Philippines timezone and date filtering"""
+        # Show date filter dialog
+        date_dialog = DateFilterDialog(self)
+        if date_dialog.exec() != QDialog.DialogCode.Accepted:
+            return
+            
+        start_date, end_date = date_dialog.get_date_range()
+        
         file_name, _ = QFileDialog.getSaveFileName(
             self,
             "Export Logs to Text",
@@ -481,26 +515,35 @@ class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
                 
                 with open(file_name, 'w') as file:
                     file.write("CSU VeMon Logs\n")
+                    file.write(f"Date Range: {start_date} to {end_date}\n")
                     file.write("=" * 100 + "\n\n")
                     
-                    file.write(f"{'RFID':<15} {'Name':<30} {'Plate No.':<15} {'Date':<12} {'Time':<12} {'Remarks':<10}\n")
+                    file.write(f"{'RFID':<15} {'Name':<30} {'Plate No.':<15} "
+                              f"{'Date':<12} {'Time':<12} {'Remarks':<10}\n")
                     file.write("-" * 100 + "\n")
                     
                     for log in logs:
-                        
-                        dt = datetime.strptime(f"{log['log_date']} {log['time_logged']}", "%Y-%m-%d %I:%M %p")
+                        dt = datetime.strptime(f"{log['log_date']} {log['time_logged']}", 
+                                             "%Y-%m-%d %I:%M %p")
                         pht = dt + timedelta(hours=8)
                         
-                        file.write(
-                            f"{log['rfid_tag']:<15} "
-                            f"{log['name'][:30]:<30} "
-                            f"{log['plate_no']:<15} "
-                            f"{pht.strftime('%Y-%m-%d'):<12} "
-                            f"{pht.strftime('%I:%M %p'):<12} "
-                            f"{log['remarks']:<10}\n"
-                        )
+                        # Filter by date range
+                        if start_date <= pht.date() <= end_date:
+                            file.write(
+                                f"{log['rfid_tag']:<15} "
+                                f"{log['name'][:30]:<30} "
+                                f"{log['plate_no']:<15} "
+                                f"{pht.strftime('%Y-%m-%d'):<12} "
+                                f"{pht.strftime('%I:%M %p'):<12} "
+                                f"{log['remarks']:<10}\n"
+                            )
                 
-                QMessageBox.information(self, "Success", f"Logs exported successfully to {file_name}")
+                QMessageBox.information(
+                    self, 
+                    "Success", 
+                    f"Filtered logs exported successfully to {file_name}\n"
+                    f"Date range: {start_date} to {end_date}"
+                )
                 
             except Exception as e:
                 QMessageBox.critical(self, "Error", f"Failed to export logs: {str(e)}")
@@ -878,14 +921,63 @@ class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
             self.close()
 
     def toggle_toolbar(self):
-        """Toggle toolbar visibility"""
+        """Toggle toolbar visibility with dynamic text"""
         self.toolbar_visible = not self.toolbar_visible
         self.toolBar.setVisible(self.toolbar_visible)
+        
+        # Update action text based on current state
+        if self.toolbar_visible:
+            self.actionToolbar.setText("Hide Toolbar")
+            self.actionToolbar.setToolTip("Hide the toolbar")
+        else:
+            self.actionToolbar.setText("Show Toolbar") 
+            self.actionToolbar.setToolTip("Show the toolbar")
 
     def show_about_dialog(self):
         """Show about dialog"""
         dialog = AboutDialog(self)
         dialog.exec()
+
+class DateFilterDialog(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Select Date Range")
+        self.setModal(True)
+        self.setMinimumWidth(600)
+        
+        layout = QVBoxLayout()
+        
+        # Start date section
+        start_label = QLabel("Start Date:")
+        self.start_calendar = QCalendarWidget()
+        layout.addWidget(start_label)
+        layout.addWidget(self.start_calendar)
+        
+        # End date section
+        end_label = QLabel("End Date:")
+        self.end_calendar = QCalendarWidget()
+        layout.addWidget(end_label)
+        layout.addWidget(self.end_calendar)
+        
+        # Buttons
+        button_layout = QHBoxLayout()
+        self.ok_button = QPushButton("Apply Filter")
+        self.cancel_button = QPushButton("Cancel")
+        button_layout.addWidget(self.ok_button)
+        button_layout.addWidget(self.cancel_button)
+        layout.addLayout(button_layout)
+        
+        self.setLayout(layout)
+        
+        # Connect buttons
+        self.ok_button.clicked.connect(self.accept)
+        self.cancel_button.clicked.connect(self.reject)
+    
+    def get_date_range(self):
+        return (
+            self.start_calendar.selectedDate().toPyDate(),
+            self.end_calendar.selectedDate().toPyDate()
+        )
 
 def main():
     app = QApplication(sys.argv)

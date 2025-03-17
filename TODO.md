@@ -2,12 +2,9 @@
 
 ## Features
 
-- [ ] Add date-based filtering for exports
+- [x] Add date-based filtering for exports
 
-  - [ ] Implement date picker component
-  - [ ] Add filter logic to queries
-  - [ ] Update UI to show filtered results
-  - [ ] Add reset filter option
+  - [x] Implement date picker component
 
 - [x] Improve driver deletion logic
   - [x] Change delete operation to set inactive flag

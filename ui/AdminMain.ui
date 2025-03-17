@@ -18,720 +18,687 @@
     <normaloff>../images/csuLogo.png</normaloff>../images/csuLogo.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QTabWidget" name="adminTabWidget">
+   <widget class="QFrame" name="frameCSU">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>50</y>
-      <width>1421</width>
-      <height>561</height>
+      <x>742</x>
+      <y>310</y>
+      <width>221</width>
+      <height>181</height>
      </rect>
     </property>
-    <property name="autoFillBackground">
-     <bool>false</bool>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
     </property>
-    <property name="currentIndex">
-     <number>0</number>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
     </property>
-    <widget class="QWidget" name="DriverMangement">
-     <attribute name="title">
-      <string>Driver Management</string>
-     </attribute>
-     <widget class="QFrame" name="functions">
-      <property name="geometry">
-       <rect>
-        <x>970</x>
-        <y>310</y>
-        <width>391</width>
-        <height>161</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true"/>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-      <widget class="QPushButton" name="submitButton">
-       <property name="geometry">
-        <rect>
-         <x>30</x>
-         <y>20</y>
-         <width>331</width>
-         <height>28</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"/>
-       </property>
-       <property name="text">
-        <string>Submit</string>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>../images/submit.svg</normaloff>../images/submit.svg</iconset>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="updateButton">
-       <property name="geometry">
-        <rect>
-         <x>30</x>
-         <y>70</y>
-         <width>331</width>
-         <height>28</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"/>
-       </property>
-       <property name="text">
-        <string>Update</string>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>../images/update.svg</normaloff>../images/update.svg</iconset>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="deleteButton">
-       <property name="geometry">
-        <rect>
-         <x>30</x>
-         <y>120</y>
-         <width>331</width>
-         <height>28</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">background-color: #ff8183;</string>
-       </property>
-       <property name="text">
-        <string>Delete</string>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>../images/delete.svg</normaloff>../images/delete.svg</iconset>
-       </property>
-      </widget>
-     </widget>
-     <widget class="QFrame" name="frame">
-      <property name="geometry">
-       <rect>
-        <x>962</x>
-        <y>20</y>
-        <width>411</width>
-        <height>281</height>
-       </rect>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-      <widget class="QLineEdit" name="searchValue">
-       <property name="geometry">
-        <rect>
-         <x>12</x>
-         <y>10</y>
-         <width>291</width>
-         <height>31</height>
-        </rect>
-       </property>
-      </widget>
-      <widget class="QTableWidget" name="detailsTable">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>50</y>
-         <width>391</width>
-         <height>211</height>
-        </rect>
-       </property>
-       <property name="editTriggers">
-        <set>QAbstractItemView::NoEditTriggers</set>
-       </property>
-       <column>
-        <property name="text">
-         <string>RFID</string>
-        </property>
-       </column>
-       <column>
-        <property name="text">
-         <string>Name</string>
-        </property>
-       </column>
-       <column>
-        <property name="text">
-         <string>Plate No.</string>
-        </property>
-       </column>
-      </widget>
-      <widget class="QPushButton" name="searchButton">
-       <property name="geometry">
-        <rect>
-         <x>300</x>
-         <y>10</y>
-         <width>101</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"/>
-       </property>
-       <property name="text">
-        <string>Search</string>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>../images/search.svg</normaloff>../images/search.svg</iconset>
-       </property>
-      </widget>
-     </widget>
-     <widget class="QFrame" name="framePicture">
-      <property name="geometry">
-       <rect>
-        <x>692</x>
-        <y>20</y>
-        <width>241</width>
-        <height>211</height>
-       </rect>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-      <widget class="QLabel" name="userPhoto">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>20</y>
-         <width>201</width>
-         <height>171</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="scaledContents">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </widget>
-     <widget class="QFrame" name="frameInfo">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>20</y>
-        <width>301</width>
-        <height>451</height>
-       </rect>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-      <widget class="QLabel" name="first_nameLabel">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>90</y>
-         <width>71</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>First Name:</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="rfidLabel">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>40</y>
-         <width>71</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Driver Code:</string>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="dfirst_nameValue">
-       <property name="geometry">
-        <rect>
-         <x>100</x>
-         <y>90</y>
-         <width>181</width>
-         <height>31</height>
-        </rect>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="driver_codeValue">
-       <property name="geometry">
-        <rect>
-         <x>100</x>
-         <y>40</y>
-         <width>181</width>
-         <height>31</height>
-        </rect>
-       </property>
-      </widget>
-      <widget class="QLabel" name="registerLabel">
-       <property name="geometry">
-        <rect>
-         <x>130</x>
-         <y>10</y>
-         <width>81</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Driver Details</string>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="dlast_nameValue">
-       <property name="geometry">
-        <rect>
-         <x>100</x>
-         <y>140</y>
-         <width>181</width>
-         <height>31</height>
-        </rect>
-       </property>
-      </widget>
-      <widget class="QLabel" name="last_nameLabel">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>140</y>
-         <width>71</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Last Name:</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="driver_typeLabel">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>190</y>
-         <width>71</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Driver Type:</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="licenseLabel">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>240</y>
-         <width>71</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>License No.:</string>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="license_noValue">
-       <property name="geometry">
-        <rect>
-         <x>100</x>
-         <y>240</y>
-         <width>181</width>
-         <height>31</height>
-        </rect>
-       </property>
-      </widget>
-      <widget class="QDateEdit" name="crExpiry">
-       <property name="geometry">
-        <rect>
-         <x>100</x>
-         <y>290</y>
-         <width>181</width>
-         <height>31</height>
-        </rect>
-       </property>
-      </widget>
-      <widget class="QLabel" name="licenseLabel_2">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>290</y>
-         <width>71</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>CR Expiry:</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="licenseLabel_3">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>340</y>
-         <width>71</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>OR Expiry:</string>
-       </property>
-      </widget>
-      <widget class="QDateEdit" name="orExpiry">
-       <property name="geometry">
-        <rect>
-         <x>100</x>
-         <y>340</y>
-         <width>181</width>
-         <height>31</height>
-        </rect>
-       </property>
-      </widget>
-      <widget class="QLabel" name="licenseLabel_4">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>390</y>
-         <width>81</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Driver Photo:</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="uploadButton">
-       <property name="geometry">
-        <rect>
-         <x>100</x>
-         <y>390</y>
-         <width>181</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Upload Photo</string>
-       </property>
-      </widget>
-      <widget class="QComboBox" name="driverTypeComboBox">
-       <property name="geometry">
-        <rect>
-         <x>100</x>
-         <y>190</y>
-         <width>181</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <item>
-        <property name="text">
-         <string>professional</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>non-professional</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>student</string>
-        </property>
-       </item>
-      </widget>
-     </widget>
-     <widget class="QFrame" name="frameInfo_2">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>342</x>
-        <y>20</y>
-        <width>321</width>
-        <height>211</height>
-       </rect>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-      <widget class="QLabel" name="first_nameLabel_2">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>90</y>
-         <width>81</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Plate No:</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="rfidLabel_2">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>40</y>
-         <width>71</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Plate ID: </string>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="plate_noValue">
-       <property name="geometry">
-        <rect>
-         <x>100</x>
-         <y>90</y>
-         <width>181</width>
-         <height>31</height>
-        </rect>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="plate_idValue">
-       <property name="geometry">
-        <rect>
-         <x>100</x>
-         <y>40</y>
-         <width>181</width>
-         <height>31</height>
-        </rect>
-       </property>
-      </widget>
-      <widget class="QLabel" name="registerLabel_2">
-       <property name="geometry">
-        <rect>
-         <x>120</x>
-         <y>10</y>
-         <width>111</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Vehicle Information</string>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="modelValue">
-       <property name="geometry">
-        <rect>
-         <x>100</x>
-         <y>140</y>
-         <width>181</width>
-         <height>31</height>
-        </rect>
-       </property>
-      </widget>
-      <widget class="QLabel" name="last_nameLabel_2">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>140</y>
-         <width>71</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Model:</string>
-       </property>
-      </widget>
-     </widget>
-     <widget class="QFrame" name="frameCSU">
-      <property name="geometry">
-       <rect>
-        <x>702</x>
-        <y>260</y>
-        <width>221</width>
-        <height>181</height>
-       </rect>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-      <widget class="QLabel" name="csuLabel">
-       <property name="geometry">
-        <rect>
-         <x>60</x>
-         <y>140</y>
-         <width>101</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>MS Reference Sans Serif</family>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>CSU VeMon</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="csuLogo">
-       <property name="geometry">
-        <rect>
-         <x>50</x>
-         <y>20</y>
-         <width>121</width>
-         <height>121</height>
-        </rect>
-       </property>
-       <property name="lineWidth">
-        <number>0</number>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>../images/csuLogo.png</pixmap>
-       </property>
-       <property name="scaledContents">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </widget>
-     <widget class="QFrame" name="frameInfo_3">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>342</x>
-        <y>260</y>
-        <width>321</width>
-        <height>161</height>
-       </rect>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-      <widget class="QLabel" name="first_nameLabel_3">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>90</y>
-         <width>131</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Last Lastname:</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="rfidLabel_3">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>40</y>
-         <width>101</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>First Name:</string>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="plast_nameValue">
-       <property name="geometry">
-        <rect>
-         <x>130</x>
-         <y>90</y>
-         <width>151</width>
-         <height>31</height>
-        </rect>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="pfirst_nameValue">
-       <property name="geometry">
-        <rect>
-         <x>130</x>
-         <y>40</y>
-         <width>151</width>
-         <height>31</height>
-        </rect>
-       </property>
-      </widget>
-      <widget class="QLabel" name="registerLabel_3">
-       <property name="geometry">
-        <rect>
-         <x>110</x>
-         <y>10</y>
-         <width>131</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Proprietor Information</string>
-       </property>
-      </widget>
-     </widget>
-     <zorder>functions</zorder>
-     <zorder>frame</zorder>
-     <zorder>framePicture</zorder>
-     <zorder>frameInfo</zorder>
-     <zorder>frameCSU</zorder>
-     <zorder>frameInfo_3</zorder>
-     <zorder>frameInfo_2</zorder>
+    <widget class="QLabel" name="csuLabel">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>140</y>
+       <width>101</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>MS Reference Sans Serif</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>CSU VeMon</string>
+     </property>
     </widget>
-    <widget class="QWidget" name="tab_2">
-     <attribute name="title">
-      <string>Vehicle Logs</string>
-     </attribute>
+    <widget class="QLabel" name="csuLogo">
+     <property name="geometry">
+      <rect>
+       <x>50</x>
+       <y>20</y>
+       <width>121</width>
+       <height>121</height>
+      </rect>
+     </property>
+     <property name="lineWidth">
+      <number>0</number>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="pixmap">
+      <pixmap>../images/csuLogo.png</pixmap>
+     </property>
+     <property name="scaledContents">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QFrame" name="frameInfo">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>70</y>
+      <width>301</width>
+      <height>451</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QLabel" name="first_nameLabel">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>90</y>
+       <width>71</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>First Name:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="rfidLabel">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>40</y>
+       <width>71</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Driver Code:</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="dfirst_nameValue">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>90</y>
+       <width>181</width>
+       <height>31</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="driver_codeValue">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>40</y>
+       <width>181</width>
+       <height>31</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="registerLabel">
+     <property name="geometry">
+      <rect>
+       <x>130</x>
+       <y>10</y>
+       <width>81</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Driver Details</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="dlast_nameValue">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>140</y>
+       <width>181</width>
+       <height>31</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="last_nameLabel">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>140</y>
+       <width>71</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Last Name:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="driver_typeLabel">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>190</y>
+       <width>71</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Driver Type:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="licenseLabel">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>240</y>
+       <width>71</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>License No.:</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="license_noValue">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>240</y>
+       <width>181</width>
+       <height>31</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDateEdit" name="crExpiry">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>290</y>
+       <width>181</width>
+       <height>31</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="licenseLabel_2">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>290</y>
+       <width>71</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>CR Expiry:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="licenseLabel_3">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>340</y>
+       <width>71</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>OR Expiry:</string>
+     </property>
+    </widget>
+    <widget class="QDateEdit" name="orExpiry">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>340</y>
+       <width>181</width>
+       <height>31</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="licenseLabel_4">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>390</y>
+       <width>81</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Driver Photo:</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="uploadButton">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>390</y>
+       <width>181</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Upload Photo</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="driverTypeComboBox">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>190</y>
+       <width>181</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>professional</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>non-professional</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>student</string>
+      </property>
+     </item>
+    </widget>
+   </widget>
+   <widget class="QFrame" name="frame">
+    <property name="geometry">
+     <rect>
+      <x>1002</x>
+      <y>70</y>
+      <width>411</width>
+      <height>281</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QLineEdit" name="searchValue">
+     <property name="geometry">
+      <rect>
+       <x>12</x>
+       <y>10</y>
+       <width>291</width>
+       <height>31</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QTableWidget" name="detailsTable">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>50</y>
+       <width>391</width>
+       <height>211</height>
+      </rect>
+     </property>
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
+     <column>
+      <property name="text">
+       <string>RFID</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Name</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Plate No.</string>
+      </property>
+     </column>
+    </widget>
+    <widget class="QPushButton" name="searchButton">
+     <property name="geometry">
+      <rect>
+       <x>300</x>
+       <y>10</y>
+       <width>101</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="text">
+      <string>Search</string>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>../images/search.svg</normaloff>../images/search.svg</iconset>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QFrame" name="frameInfo_2">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>382</x>
+      <y>70</y>
+      <width>321</width>
+      <height>211</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QLabel" name="first_nameLabel_2">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>90</y>
+       <width>81</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Plate No:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="rfidLabel_2">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>40</y>
+       <width>71</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Plate ID: </string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="plate_noValue">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>90</y>
+       <width>181</width>
+       <height>31</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="plate_idValue">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>40</y>
+       <width>181</width>
+       <height>31</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="registerLabel_2">
+     <property name="geometry">
+      <rect>
+       <x>120</x>
+       <y>10</y>
+       <width>111</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Vehicle Information</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="modelValue">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>140</y>
+       <width>181</width>
+       <height>31</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="last_nameLabel_2">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>140</y>
+       <width>71</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Model:</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QFrame" name="frameInfo_3">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>382</x>
+      <y>310</y>
+      <width>321</width>
+      <height>161</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QLabel" name="first_nameLabel_3">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>90</y>
+       <width>131</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Last Lastname:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="rfidLabel_3">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>40</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>First Name:</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="plast_nameValue">
+     <property name="geometry">
+      <rect>
+       <x>130</x>
+       <y>90</y>
+       <width>151</width>
+       <height>31</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="pfirst_nameValue">
+     <property name="geometry">
+      <rect>
+       <x>130</x>
+       <y>40</y>
+       <width>151</width>
+       <height>31</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="registerLabel_3">
+     <property name="geometry">
+      <rect>
+       <x>110</x>
+       <y>10</y>
+       <width>131</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Proprietor Information</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QFrame" name="framePicture">
+    <property name="geometry">
+     <rect>
+      <x>732</x>
+      <y>70</y>
+      <width>241</width>
+      <height>211</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QLabel" name="userPhoto">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>20</y>
+       <width>201</width>
+       <height>171</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="scaledContents">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QFrame" name="functions">
+    <property name="geometry">
+     <rect>
+      <x>1010</x>
+      <y>360</y>
+      <width>391</width>
+      <height>161</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QPushButton" name="submitButton">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>20</y>
+       <width>331</width>
+       <height>28</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="text">
+      <string>Submit</string>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>../images/submit.svg</normaloff>../images/submit.svg</iconset>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="updateButton">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>70</y>
+       <width>331</width>
+       <height>28</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="text">
+      <string>Update</string>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>../images/update.svg</normaloff>../images/update.svg</iconset>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="deleteButton">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>120</y>
+       <width>331</width>
+       <height>28</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: #ff8183;</string>
+     </property>
+     <property name="text">
+      <string>Delete</string>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>../images/delete.svg</normaloff>../images/delete.svg</iconset>
+     </property>
     </widget>
    </widget>
   </widget>
@@ -877,7 +844,7 @@
      <normaloff>../../../../../Downloads/Compressed/fugue-icons-3.5.6-src/icons/ui-toolbar.png</normaloff>../../../../../Downloads/Compressed/fugue-icons-3.5.6-src/icons/ui-toolbar.png</iconset>
    </property>
    <property name="text">
-    <string>Toolbar</string>
+    <string>Hide Toolbar</string>
    </property>
   </action>
   <action name="actionAbout">
