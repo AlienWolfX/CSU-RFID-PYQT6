@@ -26,7 +26,7 @@ from PyQt6.QtWidgets import (
     QPushButton
 )
 from PyQt6.QtCore import Qt, QThread, pyqtSignal, QDate, QTimer
-from PyQt6.QtGui import QPixmap
+from PyQt6.QtGui import QPixmap, QAction  
 
 from forms.LoginForm import Ui_LoginDialog
 from forms.Main import Ui_MainWindow
@@ -200,6 +200,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.actionExit.triggered.connect(self.close)
         self.actionAbout.triggered.connect(self.show_about_dialog)
 
+        # After other menu action connections
+        self.actionMaximize = QAction("Toggle Fullscreen", self) 
+        self.actionMaximize.setShortcut("F11")
+        self.actionMaximize.triggered.connect(self.toggle_fullscreen)
+        self.menuOptions.addAction(self.actionMaximize)
+
     def logout(self):
         """Handle logout button click"""
         self.rfidReader.stop()
@@ -319,6 +325,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.actionToolbar.setText("Show Toolbar") 
             self.actionToolbar.setToolTip("Show the toolbar")
 
+    def toggle_fullscreen(self):
+        """Toggle fullscreen state"""
+        if self.isFullScreen():
+            self.showNormal()
+        else:
+            self.showFullScreen()
+
 class AboutDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -396,6 +409,12 @@ class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
         
         # Store toolbar visibility state
         self.toolbar_visible = True
+
+        # After other menu action connections
+        self.actionMaximize = QAction("Toggle Fullscreen", self)
+        self.actionMaximize.setShortcut("F11")
+        self.actionMaximize.triggered.connect(self.toggle_fullscreen)
+        self.menuOptions.addAction(self.actionMaximize)
 
     def toggle_driver_view(self):
         """Toggle between active and inactive drivers view"""
@@ -937,6 +956,13 @@ class AdminMainWindow(QMainWindow, Ui_AdminMainWindow):
         """Show about dialog"""
         dialog = AboutDialog(self)
         dialog.exec()
+
+    def toggle_fullscreen(self):
+        """Toggle fullscreen state"""
+        if self.isFullScreen():
+            self.showNormal()
+        else:
+            self.showFullScreen()
 
 class DateFilterDialog(QDialog):
     def __init__(self, parent=None):
