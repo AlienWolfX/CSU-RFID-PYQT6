@@ -23,7 +23,8 @@ from PyQt6.QtWidgets import (
     QWidget,
     QCalendarWidget,
     QHBoxLayout,
-    QPushButton
+    QPushButton,
+    QStyle
 )
 from PyQt6.QtCore import Qt, QThread, pyqtSignal, QDate, QTimer
 from PyQt6.QtGui import QPixmap, QAction  
@@ -165,7 +166,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.rfidReader.rfid_tag_signal.connect(self.update_rfid_value)
         self.rfidReader.start()
         
-        self.buttonLogout.clicked.connect(self.logout)
+        # Create and configure the Logout action
+        self.actionLogout = QAction("Logout", self)
+        self.actionLogout.setShortcut("Ctrl+L")
+        self.actionLogout.setIcon(self.style().standardIcon(QStyle.StandardPixmap.SP_DialogCloseButton))
+        self.actionLogout.triggered.connect(self.logout)
+        
+        # Add Logout action to File menu before Exit
+        self.menuFile.insertAction(self.actionExit, self.actionLogout)
+        self.menuFile.insertSeparator(self.actionExit)  # Add separator between Logout and Exit
+        
         self.db = Database()
         
         self.tableLogs.setSortingEnabled(True)
@@ -205,6 +215,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.actionMaximize.setShortcut("F11")
         self.actionMaximize.triggered.connect(self.toggle_fullscreen)
         self.menuOptions.addAction(self.actionMaximize)
+        
+        # Add to both menu and toolbar
+        self.menuFile.addAction(self.actionLogout)
 
     def logout(self):
         """Handle logout button click"""
