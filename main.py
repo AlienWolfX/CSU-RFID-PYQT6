@@ -86,6 +86,7 @@ class RFIDReader(QThread):
                 rfid_tag = self._read_rfid_tag()
                 if rfid_tag:
                     self.read_buffer.put(rfid_tag)
+                    print("RFID Tag:", rfid_tag)
             except Exception as e:
                 print(f"Error reading RFID tag: {e}")
                 time.sleep(0.1)
@@ -98,34 +99,22 @@ class RFIDReader(QThread):
         return True
 
     def _read_rfid_tag(self) -> Optional[str]:
-        """Read RFID tag with specific pattern starting and ending with H"""
+        """Optimized RFID tag reading"""
+        BUFFER_SIZE = 3
+        byte_data = bytearray(BUFFER_SIZE)
+        bytes_read = 0
+        
         try:
-            buffer = bytearray()
-            
-            # Read available data
-            if self.ser.in_waiting > 0:
-                chunk = self.ser.read(self.ser.in_waiting)
-                buffer += chunk
-                
-                # Look for pattern starting with 'H' (0x48)
-                if buffer and 0x48 in buffer:
-                    # Find the first 'H'
-                    start_index = buffer.find(b'H')
+            if self.ser.in_waiting >= BUFFER_SIZE:
+                chunk = self.ser.read(BUFFER_SIZE)
+                if len(chunk) == BUFFER_SIZE:
                     
-                    # Check if we have at least 3 bytes after finding 'H'
-                    if start_index >= 0 and len(buffer) >= start_index + 3:
-                        # Extract exactly 3 bytes (H and 2 bytes after it)
-                        tag_data = buffer[start_index:start_index+3]
-                        
-                        if len(tag_data) == 3:
-                            # Convert to hex
-                            tag = tag_data.hex().upper()
-                            return tag
-            
-            return None
+                    tag = bytes(chunk).hex().upper()
+                    return tag
         except serial.SerialException:
-            print("Serial error in _read_rfid_tag")
-            return None
+            pass
+            
+        return None
 
     def stop(self):
         """Clean shutdown"""
@@ -162,6 +151,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
+        
+        # Set fixed size for user photo to 500x500
+        self.userPhoto.setFixedSize(500, 500)
+        self.userPhoto.setScaledContents(True)  # Scale photo to fit the fixed size
+        
         self.rfidReader = RFIDReader()
         self.rfidReader.rfid_tag_signal.connect(self.update_rfid_value)
         self.rfidReader.start()

@@ -13,8 +13,8 @@
 
 ## UI/UX Improvements
 
-- [ ] Implement responsive design
-  - [ ] Add dynamic window sizing
-  - [ ] Create flexible grid layouts
-  - [ ] Scale fonts based on window size
-  - [ ] Test on different screen resolutions
+- [x] Implement responsive design
+  - [x] Add dynamic window sizing
+  - [x] Create flexible grid layouts
+  - [x] Scale fonts based on window size
+  - [x] Test on different screen resolutions
