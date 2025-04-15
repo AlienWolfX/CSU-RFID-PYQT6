@@ -11,6 +11,8 @@
   - [x] Add restore/reactivate functionality
   - [x] Add confirmation dialog before deactivating
 
+sdfse
+
 ## UI/UX Improvements
 
 - [x] Implement responsive design
