@@ -5,7 +5,6 @@ media
 qrc
 
 # Files
-compileUI.py
 readRFID.py
 .env
 encrypt.py
